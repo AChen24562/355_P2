@@ -8,6 +8,23 @@
     <link rel="stylesheet" href="../styles/homeStyle.css">
 </head>
 <body>
+
+<!--Hidden Search widget-->
+<div class="search-bar-container">
+    <label for="input" class="label" id="input-label">Search A Stock</label>
+    <div class="search">
+
+        <input type="text" class="input" id="input" placeholder="AAPL...">
+        <button class="btn">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+
+</div>
+
+<!--Hidden Search Widget-->
+
+<!--START OF ROTATING NAV-->
 <div class="container">
     <div class="circle-container">
         <div class="circle">
@@ -31,13 +48,14 @@
 </div>
 <nav>
     <ul>
-        <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/home"><i class="fas fa-home"></i> Home</a></li>
         <li><i class="fa-solid fa-magnifying-glass"></i> Search</li>
-        <li><a href="account.html"><i class="fas fa-user-alt"></i> Account</a></li>
-        <li><a href="login.html"><i class="fa-solid fa-xmark"></i> Log Out</a></li>
+        <li><a href="/account"><i class="fas fa-user-alt"></i> Account</a></li>
+        <li><a href="/"><i class="fa-solid fa-xmark"></i> Log Out</a></li>
     </ul>
 
 </nav>
+<!--END OF ROTATING NAV-->
     <script src="../scripts/homeScript.js"></script>
 </body>
 </html>
