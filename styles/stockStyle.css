@@ -12,6 +12,59 @@ body{
     overflow-x: hidden;
     margin:0;
 }
+
+/*SEARCH BAR CSS*/
+.search-bar-container{
+    background-image: linear-gradient(90deg, #7d5, #7158e2);
+    font-family: 'Lato', 'sans-serif';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*height: 100vh;*/
+    overflow: hidden;
+    margin: 0;
+}
+
+.search{
+    position: relative;
+    height: 50px;
+}
+.search .input{
+    background-color: #fff;
+    border: 0;
+    font-size: 18px;
+    padding: 15px;
+    height: 50px;
+    width: 50px;
+    transition: width 0.3s ease;
+}
+.btn{
+    background-color: #fff;
+    border: 0;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 50px;
+    width: 50px;
+    transition: transform 0.3s ease;
+}
+.btn:focus, .input:focus{
+    outline: none;
+}
+.search.active .input{
+    width: 200px;
+}
+.search.active .btn{
+    transform: translateX(198px);
+}
+
+#input-label{
+    font-weight: bold;
+    margin-right: 25px;
+}
+/*END SEARCH BAR CSS*/
+
 .container{
     background-color: #fafafa;
     transform-origin: top left;
@@ -131,3 +184,64 @@ nav ul li a {
 nav ul li a:hover {
     text-decoration: underline;
 }
+/*End Search bar css*/
+
+/*Start of Buy sell css*/
+
+.transaction-panel {
+    /* This positions the panel on the right */
+    position: absolute;
+    top: 50px; /* Adjust as needed */
+    right: 50px; /* Adjust as needed */
+    width: 250px; /* Adjust as needed */
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.buy-sell-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.buy-sell-form input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.buy-sell-form p {
+    margin: 10px 0;
+}
+
+.buy-sell-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.buy-sell-form button:hover {
+    background-color: #218838;
+}
+
+.available-balance {
+    color: #555;
+    text-align: center;
+    margin-top: 15px;
+    font-style: italic;
+}
+
+/* Adjust the stock-info and other sections as needed to fit the new layout */
+.stock-info {
+    /* styles for the left section */
+    margin-right: 300px; /* should be more than the width of transaction-panel */
+}
+/*End of buy sell*/

@@ -8,6 +8,20 @@
     <link rel="stylesheet" href="../styles/stockStyle.css">
 </head>
 <body>
+    <!--Hidden Search widget-->
+    <div class="search-bar-container">
+        <label for="input" class="label" id="input-label">Search A Stock</label>
+        <div class="search">
+
+            <input type="text" class="input" id="input" placeholder="AAPL...">
+            <button class="btn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+    </div>
+    <!--Hidden Search Widget-->
+
     <div class="container">
         <div class="circle-container">
             <div class="circle">
@@ -21,24 +35,49 @@
         </div>
 
         <div class="content">
-            <h1 id="stock-chosen">Stock Chosen</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati, quod?</p>
-            <h3>Dog</h3>
-            <img src="" alt="image"/>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat, similique!</p>
+
+            <div class="stock-info">
+                <h1 id="stock-chosen">Stock Chosen</h1>
+            </div>
+
+            <div class="transaction-panel">
+                <div class="buy-sell-form">
+                    <h3 id="buy-transactions">Buy</h3>
+                    <label for="shares">Shares</label>
+                    <input type="number" id="shares" placeholder="0">
+                    <p>Market price: <span id="marketPrice">$176.01</span></p>
+                    <p>Estimated cost: <span id="estimatedCost">$0.00</span></p>
+                    <button id="reviewBuy">Buy</button>
+                    <hr>
+
+                    <h3 id="sell-transactions">Sell</h3>
+                    <label for="shares-sell">Shares</label>
+                    <input type="number" id="shares-sell" placeholder="0">
+                    <p>Market price: <span id="marketPrice-sell">$176.01</span></p>
+                    <p>Estimated Sale: <span id="estimatedCost-sell">$0.00</span></p>
+                    <p>Current No. Shares: <span class="current-shares"></span></p>
+                    <button id="reviewSell">Sell</button>
+
+                    <p class="available-balance">$3,855.60 available</p>
+                </div>
+            </div>
+
+
         </div>
     </div>
     <nav>
         <ul>
             <ul>
                 <li><a href="/home"><i class="fas fa-home"></i> Home</a></li>
-                <li><i class="fa-solid fa-magnifying-glass"></i> Search</li>
                 <li><a href="/account"><i class="fas fa-user-alt"></i> Account</a></li>
                 <li><a href="/"><i class="fa-solid fa-xmark"></i> Log Out</a></li>
             </ul>
         </ul>
 
     </nav>
+<!--End Search widget-->
+
+
 
     <script src="../scripts/stockScript.js"></script>
 </body>

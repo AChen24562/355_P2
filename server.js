@@ -83,6 +83,39 @@ app.post('/register_user', (req, res) => {
     });
 });
 
+// Get user info
+app.get('/get_user', (req, res) => {
+    const userId = req.query.userId;
+    if (!userId) {
+        return res.status(400).send({ status: 'error', message: 'UserID is required' });
+    }
+    const query = 'SELECT * FROM stock_user WHERE id = ?';
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).send({ status: 'error', message: 'Database query failed' });
+        }
+
+        res.json(results);
+    });
+})
+
+// Get stocks for a user, given the user id and ticker
+app.get('/get_ticker_by_user', (req, res) => {
+  const userId = req.query.userId;
+    if (!userId) {
+        return res.status(400).send({ status: 'error', message: 'UserID is required' });
+    }
+    const query = 'SELECT * FROM stocks WHERE user_id = ?';
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).send({ status: 'error', message: 'Database query failed' });
+        }
+
+        res.json(results);
+    });
+})
 
 // Query API
 // Shouldn't use this in production, but it's fine for testing, should use env variables

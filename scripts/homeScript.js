@@ -28,11 +28,10 @@ btn.addEventListener('click', () => {
     search.classList.toggle('active')
     input.focus();
 })
-
-
 // End of hidden search
 
 
+// Begin Stock API query
 input.addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
@@ -61,3 +60,4 @@ function getStockQuote(symbol) {
             });
     }
 }
+// End of Stock API query
