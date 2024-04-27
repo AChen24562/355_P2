@@ -1,4 +1,11 @@
 // Rotating navigation
+document.addEventListener('DOMContentLoaded', function (){
+    const userId = sessionStorage.getItem("userId");
+    const accountBalance = sessionStorage.getItem('accountBalance')
+    console.log(userId);
+    console.log(accountBalance)
+})
+
 const open = document.getElementById('open');
 const close = document.getElementById('close');
 const container = document.querySelector('.container');
@@ -28,55 +35,29 @@ btn.addEventListener('click', () => {
 input.addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
-        window.location.href = '/stock';
+        getStockQuote(input.value);
     }
 });
+function getStockQuote(symbol) {
+    if (symbol) {
+        fetch(`/api/quote?symbol=${encodeURIComponent(symbol)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                sessionStorage.setItem('currentPrice', data.c);
+                sessionStorage.setItem('stockTicker', symbol);
+                // setTimeout(() => window.location.href = '/stock', 100);
+                window.location.href = '/stock';
 
-
-// Display user's stock portfolio
-document.addEventListener('DOMContentLoaded', function () {
-    const userId = sessionStorage.getItem("userId");
-
-    // Get array of stocks in the database by user_id
-    fetch(`/get_portfolio?userId=${encodeURIComponent(userId)}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch portfolio');
-            }
-            return response.json();
-        })
-        .then(portfolio => {
-            const portfolioContainer = document.querySelector('.portfolio-container');
-            const balanceContainer = document.querySelector('.balances-container');
-            const accountBalance = sessionStorage.getItem('accountBalance')
-            const availableBalance = sessionStorage.getItem('availableBalance')
-            balanceContainer.innerHTML = `
-                <h2>Balances:</h2>
-                <p>Account Balance: $${parseFloat(accountBalance).toFixed(2)}</p>
-                <p>Available Balance: $${parseFloat(availableBalance).toFixed(2)}</p>            
-                `;
-            console.log(availableBalance)
-            // If response successful, loop through the array and display each stock and info
-            portfolio.forEach(stock => {
-                const stockDiv = document.createElement('div');
-                stockDiv.classList.add('stock-item');
-                stockDiv.innerHTML = `
-                    <p>Ticker: ${stock.ticker.toUpperCase()}</p>
-                    <p>Quantity: ${stock.quantity}</p>
-                    <p>Current Price: $${stock.current_price}</p>
-                    <p>Purchase Price: $${stock.price_purchased}</p>
-                    <p>Profit: $${(stock.current_price - stock.price_purchased) * stock.quantity}</p>
-                `;
-                stockDiv.addEventListener('click', () =>{
-                    sessionStorage.setItem('stockTicker', stock.ticker);
-                    window.location.href = '/stock';
-                })
-                portfolioContainer.appendChild(stockDiv);
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Failed to load the portfolio');
-        });
-
-})
+    }
+}
+// End of Stock API query
