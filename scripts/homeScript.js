@@ -61,3 +61,20 @@ function getStockQuote(symbol) {
     }
 }
 // End of Stock API query
+
+// Display user's stock portfolio
+document.addEventListener('DOMContentLoaded', function () {
+    const userId = sessionStorage.getItem("userId");
+    const accountBalance = sessionStorage.getItem('accountBalance')
+    console.log(userId);
+    console.log(accountBalance)
+    fetch(`/get_portfolio?userId=${encodeURIComponent(userId)}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            // TODO Error here the response doesn't seem to be correct
+            console.log(response.json());
+            return response.json();
+        })
+})

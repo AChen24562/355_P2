@@ -79,10 +79,32 @@ document.addEventListener('DOMContentLoaded', async function () {
 // Begin adding listener for buy and sell button
 const buyButton = document.getElementById('buy-button');
 const sellButton = document.getElementById('sell-button');
-buyButton.addEventListener('click', () =>{
-    let totalCost = parseFloat(document.getElementById('estimatedCost').innerHTML.slice(1));
-    console.log(totalCost);
+buyButton.addEventListener('click', () => {
+    const shares = parseInt(document.getElementById('shares').value);
+    const purchasePrice = parseFloat(stockPrice); // This should be the current market price
+
+    if (shares > 0) {
+        buyStock(shares, purchasePrice);
+    } else {
+        alert('Please enter a valid number of shares to buy.');
+    }
+
 })
+
+sellButton.addEventListener('click', () => {
+    const shares_sell = parseInt(document.getElementById('shares-sell').value);
+    const sellPrice = parseFloat(stockPrice);
+
+    if(shares_sell > 0){
+        sellStock(shares_sell, sellPrice);
+    }else{
+        alert('Please enter a valid number of shares to sell.');
+    }
+})
+
+
+// END adding listener for buy and sell
+
 
 open.addEventListener('click', ()=>
     container.classList.add('show-nav')
@@ -170,5 +192,68 @@ function getUser(userId) {
         .catch(error => {
             console.error('Error:', error);
             return [];
+        });
+}
+
+// Buy stock function
+// Update available balance for user
+// Update stock holdings for user
+function buyStock(shares, purchasePrice){
+    fetch('/buy_stock', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            userId: userId,
+            ticker: stockTicker,
+            shares: shares,
+            purchasePrice: purchasePrice
+        }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Purchase successful!');
+                window.location.reload();
+            } else {
+                alert(`Purchase failed: ${data.error}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+function sellStock(sharesToSell, currentPrice) {
+    fetch('/sell_stock', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            userId: userId,
+            ticker: stockTicker,
+            shares_sell: sharesToSell,
+            sellPrice: currentPrice
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Sale successful!');
+                window.location.reload();
+            } else {
+                alert(`Sale failed: ${data.error}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to process sale');
         });
 }

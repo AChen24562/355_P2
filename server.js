@@ -118,6 +118,178 @@ app.get('/get_ticker_by_user', (req, res) => {
     });
 })
 
+// Modify user available balance and stock holdings
+app.post('/buy_stock', (req, res) => {
+    const userId = req.body.userId;
+    const ticker = req.body.ticker;
+    const sharesToBuy = parseInt(req.body.shares);
+    const purchasePrice = parseFloat(req.body.purchasePrice);
+    db.beginTransaction(err => {
+        if (err) {
+            console.error('Error starting transaction:', err);
+            return res.status(500).json({ error: 'Error starting transaction' });
+        }
+
+        // Check if the user has enough balance
+        db.query('SELECT account_balance FROM stock_user WHERE id = ?', [userId], (err, results) => {
+            if (err) {
+                console.error('Error fetching user balance:', err);
+                return db.rollback(() => {
+                    res.status(500).json({ error: 'Error fetching user balance' });
+                });
+            }
+
+            if (results.length === 0) {
+                return db.rollback(() => {
+                    res.status(404).json({ error: 'User not found' });
+                });
+            }
+
+            const currentBalance = results[0].account_balance;
+            const totalCost = sharesToBuy * purchasePrice;
+
+            if (currentBalance < totalCost) {
+                return db.rollback(() => {
+                    res.status(400).json({ error: 'Insufficient balance' });
+                });
+            }
+
+            // Take the cost from the user's balance
+            db.query('UPDATE stock_user SET available_balance = available_balance - ? WHERE id = ?', [totalCost, userId], (err, updateResults) => {
+                if (err) {
+                    console.error('Error updating user balance:', err);
+                    return db.rollback(() => {
+                        res.status(500).json({ error: 'Error updating user balance' });
+                    });
+                }
+
+                // Update quantity of stock for that user
+                // Query to update stocks for the user
+                const insertOrUpdateQuery = `
+                    INSERT INTO stocks (ticker, name, price_purchased, user_id, quantity, current_price)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                    quantity = quantity + VALUES(quantity), 
+                    price_purchased = VALUES(price_purchased)
+                `;
+
+                db.query(insertOrUpdateQuery, [ ticker, ticker, purchasePrice, userId, sharesToBuy, purchasePrice], (err, insertResults) => {
+                    if (err) {
+                        console.error('Error updating stocks:', err);
+                        return db.rollback(() => {
+                            res.status(500).json({ error: 'Error updating stocks' });
+                        });
+                    }
+
+                    db.commit(err => {
+                        if (err) {
+                            console.error('Error committing transaction:', err);
+                            return db.rollback(() => {
+                                res.status(500).json({ error: 'Error during transaction commit' });
+                            });
+                        }
+                        res.json({ status: 'success', message: 'Stock purchased successfully' });
+                    });
+                });
+            });
+        });
+    });
+});
+
+app.post('/sell_stock', (req, res) => {
+    const userId = req.body.userId;
+    const ticker = req.body.ticker;
+    const sharesToSell = parseInt(req.body.shares_sell);
+    const currentPrice = parseFloat(req.body.sellPrice);
+
+
+    db.beginTransaction(err => {
+        if (err) {
+            console.error('Error starting transaction:', err);
+            return res.status(500).json({ error: 'Error starting transaction' });
+        }
+
+        // Query to update stock quantity and price
+        const updateStockQuery = `
+            UPDATE stocks
+            SET quantity = quantity - ?, current_price = ?
+            WHERE user_id = ? AND ticker = ? AND quantity >= ?
+        `;
+
+        db.query(updateStockQuery, [sharesToSell, currentPrice, userId, ticker, sharesToSell], (err, results) => {
+            if (err) {
+                console.error('Error updating stocks:', err);
+                return db.rollback(() => {
+                    res.status(500).json({ error: 'Error updating stocks' });
+                });
+            }
+
+            if (results.affectedRows === 0) {
+                return db.rollback(() => {
+                    res.status(400).json({ error: 'Not enough stocks to sell or stock not found' });
+                });
+            }
+
+            db.commit(err => {
+                if (err) {
+                    console.error('Error committing transaction:', err);
+                    return db.rollback(() => {
+                        res.status(500).json({ error: 'Error during transaction commit' });
+                    });
+                }
+                res.json({ status: 'success', message: 'Stock sold successfully' });
+
+                const updateUserAvailableBalanceQuery = `
+                    UPDATE stock_user
+                    SET available_balance = available_balance + ?
+                    WHERE id = ?
+                `;
+                db.query(updateUserAvailableBalanceQuery, [sharesToSell * currentPrice, userId], (err,updateBalance) => {
+                    if (err) {
+                        console.error('Error updating user balance:', err);
+                        console.log('Error updating user balance');
+                        return db.rollback(() => {
+                            res.status(500).json({ error: 'Error updating user balance' });
+                        });
+                    }
+                })
+            });
+        });
+    });
+});
+// Update user's available balance
+// TODO use this function to update users' available account balance
+function updateUserAvailableBalance(userId, amount, db) {
+    const query = 'UPDATE stock_user SET available_balance = available_balance + ? WHERE id = ?';
+    db.query(query, [amount, userId], (err, results) => {
+        if (err) {
+            console.error('Error updating user balance:', err);
+            return false;
+        }
+        return true;
+    });
+}
+
+// Get user's stock portfolio
+app.get('/get_portfolio', (req, res) => {
+    const userId = req.query.userId;
+    if (!userId) {
+        return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    const query = 'SELECT * FROM stocks WHERE user_id = ?';
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching user stocks:', err);
+            return res.status(500).json({ error: 'Error fetching user stocks' });
+        }
+
+        // Returns an array of the stocks that correspond with user_id
+        console.log(results);
+        res.json(results);
+    });
+});
+
 // Query API
 // Shouldn't use this in production, but it's fine for testing, should use env variables
 const FINNHUB_API_KEY = 'cojslk9r01qotadtbuogcojslk9r01qotadtbup0';
