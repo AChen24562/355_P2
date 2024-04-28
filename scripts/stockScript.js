@@ -2,12 +2,17 @@ const open = document.getElementById('open');
 const close = document.getElementById('close');
 const container = document.querySelector('.container');
 
-// Begin rotating navigation
+// Input for no. of shares buy and sell
+const sharesBuy = document.getElementById('shares');
+const sharesSell = document.getElementById('shares-sell');
+// User and stock input info
+const stockPrice = sessionStorage.getItem('currentPrice');
+const stockTicker = sessionStorage.getItem('stockTicker');
+const userId = sessionStorage.getItem("userId");
 
+// Begin rotating navigation
 document.addEventListener('DOMContentLoaded', async function () {
-    const stockPrice = sessionStorage.getItem('currentPrice');
-    const stockTicker = sessionStorage.getItem('stockTicker');
-    const userId = sessionStorage.getItem("userId");
+
 
     const stockChosen = document.getElementById('stock-chosen');
     console.log(stockPrice);
@@ -21,18 +26,38 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById('marketPrice-sell').innerHTML = `${parseFloat(stockPrice).toFixed(2)}`;
 
     // Add event listener for input on the number of stocks being bought/sold
-    const sharesBuy = document.getElementById('shares');
     sharesBuy.addEventListener('input', function() {
         const shares = parseInt(sharesBuy.value);
-        const estimatedCost = shares * parseFloat(stockPrice);
-        console.log(estimatedCost);
-        document.getElementById('estimatedCost').innerHTML = `$${estimatedCost.toFixed(2)}`;
+        if(shares){
+            const estimatedCost = shares * parseFloat(stockPrice);
+            console.log(estimatedCost);
+            document.getElementById('estimatedCost').innerHTML = `$${estimatedCost.toFixed(2)}`;
+        }
+        else{
+            document.getElementById('estimatedCost').innerHTML = `$0.00`;
+        }
+    })
 
+    sharesSell.addEventListener('input', function() {
+        const shares = parseInt(sharesSell.value);
+        if(shares){
+            if(shares > parseInt(document.querySelector('.current-shares').innerHTML)){
+                document.getElementById('estimatedCost-sell').innerHTML = `Not enough shares to sell...`;
+            }
+            else{
+                const estimatedCost = shares * parseFloat(stockPrice);
+                console.log(estimatedCost);
+                document.getElementById('estimatedCost-sell').innerHTML = `$${estimatedCost.toFixed(2)}`;
+            }
+        }
+        else{
+            document.getElementById('estimatedCost-sell').innerHTML = `$0.00`;
+        }
     })
 
     // Begin updating buy/sell form on user data
     if (userId) {
-        let stock_data =  await getUserStocks(userId);
+        let stock_data =  await getUserStocks(userId, stockTicker);
         let user_data = await getUser(userId);
         
         console.log(stock_data)
@@ -47,7 +72,16 @@ document.addEventListener('DOMContentLoaded', async function () {
         window.location.href = '/';
         
     }
+    // End updating buy/sell form on user data
     
+})
+
+// Begin adding listener for buy and sell button
+const buyButton = document.getElementById('buy-button');
+const sellButton = document.getElementById('sell-button');
+buyButton.addEventListener('click', () =>{
+    let totalCost = parseFloat(document.getElementById('estimatedCost').innerHTML.slice(1));
+    console.log(totalCost);
 })
 
 open.addEventListener('click', ()=>
@@ -103,8 +137,8 @@ function getStockQuote(symbol) {
 // End of Stock API query
 
 // Begin Buy/Sell form
-function getUserStocks(userId) {
-    return fetch(`/get_ticker_by_user?userId=${encodeURIComponent(userId)}`)
+function getUserStocks(userId, ticker) {
+    return fetch(`/get_ticker_by_user?userId=${encodeURIComponent(userId)}&ticker=${encodeURIComponent(ticker)}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
