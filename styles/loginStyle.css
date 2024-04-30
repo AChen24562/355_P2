@@ -14,7 +14,7 @@ body {
 
 /*Start Toasts*/
 #toasts{
-position: fixed;
+    position: fixed;
     bottom: 10px;
     right: 10px;
     display: flex;
@@ -104,17 +104,15 @@ position: fixed;
 .login-form button {
     font-family: 'Muli', sans-serif;
     width: calc(50% - 50px);
-    min-width: 150px;
     padding: 10px;
     margin: 5px 0px;
     border: none;
     border-radius: 4px;
-    background-color: black;
+    background-color: #5C6BC0;
     color: white;
     cursor: pointer;
-    transition: 0.35s background-color;
 }
 
 .login-form button:hover {
-    background-color: #52A66E;
+    background-color: #3949AB;
 }

@@ -9,23 +9,30 @@
     <link rel="stylesheet" href="../styles/loginStyle.css">
 </head>
 <body>
-    <div class="login-display-container">
-        <div class="image">
-            <!-- Insert link to image -->
-            <img src="../images/bull_market.png" alt="login image">
-        </div>
-        <div class="login-container">
-            <h1 class="account-h1">Login or Register</h1>
-            <form class="login-form">
-                <label for="username">Username</label>
-                <input type="text" id="username" required>
-                <label for="password">Password</label>
-                <input type="password" id="password" required>
-                <button type="button" id="login-btn">Login</button>
-                <button type="button" id="register-btn">Register</button>
-            </form>
+<div class="login-display-container">
+
+    <div id="image" class="image">
+        <!-- Insert link to image -->
+        <img id="background-image" src="../images/bull_market.png" alt="login image">
+    </div>
+
+    <div class="login-container">
+        <h1 class="account-h1">Login or Register</h1>
+        <form class="login-form">
+            <label for="username">Username</label>
+            <input type="text" id="username" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" required>
+            <button type="button" id="login-btn">Login</button>
+            <button type="button" id="register-btn">Register</button>
+        </form>
+
+        <div id="toasts">
+            <div class=toast"></div>
+            <div class="toast"></div>
         </div>
     </div>
-    <script src="../scripts/loginScript.js"></script>
+</div>
+<script src="../scripts/loginScript.js"></script>
 </body>
 </html>

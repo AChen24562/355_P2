@@ -91,7 +91,7 @@ body{
 }
 
 .container.show-nav .circle{
-    transform: rotate(-70deg);
+    transform: rotate(-210deg);
 }
 
 .circle button{
@@ -113,7 +113,7 @@ body{
 }
 .circle button#close{
     top: 60%;
-    transform: rotate(90deg);
+    transform: rotate(180deg);
     transform-origin: top left;
 }
 .content img{
@@ -245,3 +245,88 @@ nav ul li a:hover {
     margin-right: 300px; /* should be more than the width of transaction-panel */
 }
 /*End of buy sell*/
+
+/*Start company financial and insider css*/
+.financials-container,
+.insider-transactions-container {
+    background: #fff;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+}
+
+.financials-container h3,
+.insider-transactions-container h3 {
+    margin-top: 0;
+    color: #333;
+    font-weight: 600;
+}
+
+.financials-container div,
+.insider-transactions-container div {
+    padding: 10px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.financials-container div:last-child,
+.insider-transactions-container div:last-child {
+    border-bottom: none;
+}
+
+.financials-container label,
+.insider-transactions-container label {
+    font-weight: bold;
+}
+
+.financials-container span,
+.insider-transactions-container span {
+    float: right;
+    font-weight: normal;
+}
+/*End of company financial and insder css*/
+
+/*Kinetic style*/
+.kinetic{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 80px;
+    width: 80px;
+    z-index: 9999;
+    display: none;
+    opacity: 0;  // Start with the loader being invisible
+transition: opacity 0.5s ease-in-out;
+}
+.kinetic::after, .kinetic::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border: 50px solid transparent;
+    border-bottom-color: darkgreen;  /* Changed to dark green */
+    animation: rotateA 2s linear infinite 0.5s;
+}
+
+.kinetic::before {
+    transform: rotate(90deg);
+    animation: rotateB 2s linear infinite;
+}
+
+@keyframes rotateA {
+    0%, 25% { transform: rotate(0deg); }
+    50%, 75% { transform: rotate(180deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes rotateB {
+    0%, 25% { transform: rotate(90deg); }
+    50%, 75% { transform: rotate(270deg); }
+    100% { transform: rotate(450deg); }
+}
+
+/*End kinetic style*/
