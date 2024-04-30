@@ -91,11 +91,11 @@ body{
 }
 
 .container.show-nav .circle{
-    transform: rotate(-70deg);
+    transform: rotate(-210deg);
 }
 
 .circle button{
-    position: absolute;;
+    position: absolute;
     top: 50%;
     left: 50%;
     height: 100px;
@@ -113,7 +113,7 @@ body{
 }
 .circle button#close{
     top: 60%;
-    transform: rotate(90deg);
+    transform: rotate(180deg);
     transform-origin: top left;
 }
 .content img{
@@ -183,4 +183,97 @@ nav ul li a {
 
 nav ul li a:hover {
     text-decoration: underline;
+}
+
+/*content style*/
+.content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    margin: 20px auto;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.content h1, .content h2, .content h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.content p {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.deposit-withdraw-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.transaction {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+    width: 48%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.transaction h3 {
+    margin-bottom: 10px;
+}
+
+.transaction input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.transaction button {
+    width: 100%;
+    padding: 12px;
+    background-color: transparent;
+    color: #4CAF50;
+    border: 2px solid #4CAF50;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-weight: bold;
+}
+#deposit-button{
+    width: 25%;
+    padding: 10px;
+    background-color: transparent;
+    color: #4CAF50;
+    border: 2px solid #4CAF50;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-weight: bold;
+}
+#withdraw-button{
+    width: 28%;
+    padding: 10px;
+    background-color: transparent;
+    color: #4CAF50;
+    border: 2px solid #4CAF50;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-weight: bold;
+}
+
+#deposit-button:hover, #withdraw-button:hover {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+#deposit-button:active, #withdraw-button:active {
+    background-color: lightblue;
+    color: #fff;
 }

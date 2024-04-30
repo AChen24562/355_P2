@@ -89,7 +89,7 @@ body{
 }
 
 .container.show-nav .circle{
-    transform: rotate(-70deg);
+    transform: rotate(-210deg);
 }
 
 .circle button{
@@ -111,7 +111,7 @@ body{
 }
 .circle button#close{
     top: 60%;
-    transform: rotate(90deg);
+    transform: rotate(180deg);
     transform-origin: top left;
 }
 .content img{
@@ -182,3 +182,27 @@ nav ul li a {
 nav ul li a:hover {
     text-decoration: underline;
 }
+
+/*Portfolio list style*/
+.portfolio-container {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+}
+
+.stock-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.stock-item:hover {
+    background-color: #f0f0f0;
+}
+
+.stock-item:last-child {
+    border-bottom: none;
+}
+/*End Portfolio list style*/

@@ -34,6 +34,10 @@ body {
     height: 100%;
     object-fit: cover;
     object-position: center;
+
+}
+#background-image{
+    filter: blur(20px);
 }
 
 .login-container {

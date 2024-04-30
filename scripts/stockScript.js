@@ -6,19 +6,19 @@ const container = document.querySelector('.container');
 const sharesBuy = document.getElementById('shares');
 const sharesSell = document.getElementById('shares-sell');
 // User and stock input info
-const stockPrice = sessionStorage.getItem('currentPrice');
 const stockTicker = sessionStorage.getItem('stockTicker');
 const userId = sessionStorage.getItem("userId");
+let stockPrice = '';
 
 // Begin rotating navigation
 document.addEventListener('DOMContentLoaded', async function () {
-
-
     const stockChosen = document.getElementById('stock-chosen');
-    console.log(stockPrice);
+    await getStockQuote(stockTicker);
+    stockPrice = sessionStorage.getItem('currentPrice');
     console.log(stockTicker);
     console.log(userId);
-    stockChosen.innerHTML = `Stock: ${stockTicker} <br> Price: $${stockPrice}`;
+    console.log(stockPrice);
+    stockChosen.innerHTML = `Stock: ${stockTicker.toUpperCase()} <br> Price: $${parseFloat(stockPrice).toFixed(2)}`;
     
     
     // Update buy/sell form on market data
@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             const estimatedCost = shares * parseFloat(stockPrice);
             console.log(estimatedCost);
             document.getElementById('estimatedCost').innerHTML = `$${estimatedCost.toFixed(2)}`;
+            sessionStorage.setItem('estimatedCostBuy', estimatedCost.toString());
         }
         else{
             document.getElementById('estimatedCost').innerHTML = `$0.00`;
@@ -61,10 +62,25 @@ document.addEventListener('DOMContentLoaded', async function () {
         let user_data = await getUser(userId);
         
         console.log(stock_data)
-        console.log(stock_data[0]['ticker']);
-        const currentShares = document.querySelector('.current-shares');
-        currentShares.innerHTML = `${stock_data[0]['quantity']}`;
-        document.querySelector('.available-balance').innerHTML = `$${user_data[0]['available_balance']} available`;
+
+        // console.log(stock_data[0]['ticker']);
+        try{
+            const currentShares = document.querySelector('.current-shares');
+
+            sessionStorage.setItem('currentShares', stock_data[0]['quantity']);
+            sessionStorage.setItem('availableBalance', user_data[0]['available_balance'])
+            console.log(user_data[0]['available_balance'])
+            console.log(stock_data[0]['quantity'])
+
+            currentShares.innerHTML = `${stock_data[0]['quantity']}`;
+            document.querySelector('.available-balance').innerHTML = `$${user_data[0]['available_balance']} available`;
+        }
+        catch (error){
+            console.log('User does not have this stock');
+            console.log(error);
+            document.querySelector('.current-shares').innerHTML = '0';
+            document.querySelector('.available-balance').innerHTML = `$${user_data[0]['available_balance']} available`;
+            }
     }
     else{
         console.log('No user id found');
@@ -73,32 +89,43 @@ document.addEventListener('DOMContentLoaded', async function () {
         
     }
     // End updating buy/sell form on user data
+
+    // Get financial and insider info
+    await displayFinancialInfo(stockTicker);
+    await displayInsiderTransactions(stockTicker);
+    // End of financial and insider info
     
 })
+// Query API For stock price
+
+
 
 // Begin adding listener for buy and sell button
 const buyButton = document.getElementById('buy-button');
 const sellButton = document.getElementById('sell-button');
 buyButton.addEventListener('click', () => {
     const shares = parseInt(document.getElementById('shares').value);
-    const purchasePrice = parseFloat(stockPrice); // This should be the current market price
+    const purchasePrice = parseFloat(sessionStorage.getItem('estimatedCostBuy'));
+    const currentBalance = parseFloat(sessionStorage.getItem('availableBalance'));
 
-    if (shares > 0) {
+    if (shares > 0 && purchasePrice <= currentBalance) {
+        console.log(purchasePrice < currentBalance)
         buyStock(shares, purchasePrice);
     } else {
-        alert('Please enter a valid number of shares to buy.');
+        alert('Please enter a valid number of shares to buy. Or check if you have enough balance to purchase.');
     }
 
 })
 
 sellButton.addEventListener('click', () => {
     const shares_sell = parseInt(document.getElementById('shares-sell').value);
+    const currentShares = parseInt(document.querySelector('.current-shares').innerHTML);
     const sellPrice = parseFloat(stockPrice);
 
-    if(shares_sell > 0){
+    if(shares_sell > 0 && shares_sell <= currentShares){
         sellStock(shares_sell, sellPrice);
     }else{
-        alert('Please enter a valid number of shares to sell.');
+        alert('Please enter a valid number of shares to sell. Or check if you have enough shares to sell.');
     }
 })
 
@@ -128,34 +155,63 @@ btn.addEventListener('click', () => {
 
 
 // Begin Stock API query
-input.addEventListener('keypress', function(event) {
+input.addEventListener('keypress', async function (event) {
     if (event.key === 'Enter') {
-        event.preventDefault();
-        getStockQuote(input.value);
+        event.preventDefault(); // Always prevent the default form submission behavior
+        const symbol = input.value.trim();
+        if (symbol) {
+            sessionStorage.setItem('stockTicker', symbol);
+            // Call the function and await its completion before reloading the page
+            await getStockQuote(symbol);
+            // Now that we've updated session storage and presumably the DOM,
+            // we can reload the page to reflect these new changes
+            location.reload();
+        }
     }
 });
-function getStockQuote(symbol) {
-    if (symbol) {
-        fetch(`/api/quote?symbol=${encodeURIComponent(symbol)}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-                sessionStorage.setItem('currentPrice', data.c);
-                sessionStorage.setItem('stockTicker', symbol);
-                // setTimeout(() => window.location.href = '/stock', 100);
-                window.location.href = '/stock';
 
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+async function getStockQuote(symbol) {
+    if (symbol) {
+        try {
+            const response = await fetch(`/api/quote?symbol=${encodeURIComponent(symbol)}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            // Wait for data to come before continue
+            // DOM needs the new updated price and ticker info after every new search
+            const data = await response.json();
+            sessionStorage.setItem('currentPrice', data.c);
+            sessionStorage.setItem('stockTicker', symbol);
+
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
 }
+// function getStockQuote(symbol) {
+//     if (symbol) {
+//         fetch(`/api/quote?symbol=${encodeURIComponent(symbol)}`)
+//             .then(response => {
+//                 if (!response.ok) {
+//                     throw new Error('Network response was not ok');
+//                 }
+//                 return response.json();
+//             })
+//             .then(data => {
+//                 console.log(data);
+//                 sessionStorage.setItem('currentPrice', data.c);
+//                 sessionStorage.setItem('stockTicker', symbol);
+//
+//                 // setTimeout(() => window.location.href = '/stock', 100);
+//                 // window.location.href = '/stock';
+//
+//             })
+//             .catch(error => {
+//                 console.error('Error:', error);
+//             });
+//     }
+// }
 // End of Stock API query
 
 // Begin Buy/Sell form
@@ -257,3 +313,74 @@ function sellStock(sharesToSell, currentPrice) {
             alert('Failed to process sale');
         });
 }
+
+// Function to display formatted financial information
+async function displayFinancialInfo(ticker) {
+    try {
+        const response = await fetch(`/api/financial?symbol=${encodeURIComponent(ticker)}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch financial data');
+        }
+        const { data } = await response.json();
+        const financialContainer = document.querySelector('.financials-container');
+        let content = `<h3>Financial Information</h3>`;
+
+        // Display relevant financial data
+        content += `<div><strong>Total Assets:</strong> $${data[0].report.bs.find(item => item.concept === "us-gaap_Assets").value.toLocaleString()}</div>`;
+        content += `<div><strong>Total Liabilities:</strong> $${data[0].report.bs.find(item => item.concept === "us-gaap_Liabilities").value.toLocaleString()}</div>`;
+        content += `<div><strong>Net Income:</strong> $${data[0].report.cf.find(item => item.concept === "us-gaap_NetIncomeLoss").value.toLocaleString()}</div>`;
+
+        financialContainer.innerHTML = content;
+    } catch (error) {
+        console.error('Error fetching financial data:', error);
+        document.querySelector('.financials-container').innerHTML = 'Failed to load financial data.';
+    }
+}
+
+// Function to display insider transactions
+// Function to display top 10 insider transactions for buys and sells
+async function displayInsiderTransactions(ticker) {
+    try {
+        const response = await fetch(`/api/insider?symbol=${encodeURIComponent(ticker)}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch insider transactions');
+        }
+        const { data } = await response.json();
+        const insiderContainer = document.querySelector('.insider-transactions-container');
+        let content = `<h3>Top Insider Transactions</h3>`;
+
+        // Filter and sort the transactions
+        let buys = data.filter(transaction => transaction.change > 0);
+        let sells = data.filter(transaction => transaction.change < 0);
+
+        // Sort by change (absolute value, descending)
+        buys.sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
+        sells.sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
+
+        // Limit to top 10 for each category of sell and buy or grants
+        buys = buys.slice(0, 10);
+        sells = sells.slice(0, 10);
+
+        // for buys
+        if (buys.length > 0) {
+            content += `<div><strong>Top Buys:</strong></div>`;
+            buys.forEach(transaction => {
+                content += `<div>${transaction.name} - Shares Bought: ${transaction.change}, Price: $${transaction.transactionPrice.toFixed(2)}</div>`;
+            });
+        }
+
+        // for sells
+        if (sells.length > 0) {
+            content += `<div><strong>Top Sells:</strong></div>`;
+            sells.forEach(transaction => {
+                content += `<div>${transaction.name} - Shares Sold: ${Math.abs(transaction.change)}, Price: $${transaction.transactionPrice.toFixed(2)}</div>`;
+            });
+        }
+
+        insiderContainer.innerHTML = content;
+    } catch (error) {
+        console.error('Error fetching insider transactions:', error);
+        document.querySelector('.insider-transactions-container').innerHTML = 'Failed to load insider transactions.';
+    }
+}
+

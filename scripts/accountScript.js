@@ -2,6 +2,32 @@ const open = document.getElementById('open');
 const close = document.getElementById('close');
 const container = document.querySelector('.container');
 
+document.addEventListener('DOMContentLoaded', function() {
+    const userId = sessionStorage.getItem("userId");
+    if (!userId) {
+        alert("User not logged in");
+        window.location.href = '/';
+        return;
+    }
+
+    fetch(`/get_user?userId=${encodeURIComponent(userId)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+                console.log(data);
+                document.getElementById('account-balance').textContent = `$${parseFloat(data[0].account_balance).toFixed(2)}`;
+                document.getElementById('available-balance').textContent = `$${parseFloat(data[0].available_balance).toFixed(2)}`;
+            } else {
+                console.log('No data received');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+            alert('Error fetching account details');
+        });
+});
+
+
 open.addEventListener('click', ()=>
     container.classList.add('show-nav')
 )
@@ -26,29 +52,56 @@ btn.addEventListener('click', () => {
 input.addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
-        getStockQuote(input.value);
+        window.location.href = '/stock';
     }
 });
-function getStockQuote(symbol) {
-    if (symbol) {
-        fetch(`/api/quote?symbol=${encodeURIComponent(symbol)}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-                sessionStorage.setItem('currentPrice', data.c);
-                sessionStorage.setItem('stockTicker', symbol);
-                // setTimeout(() => window.location.href = '/stock', 100);
-                window.location.href = '/stock';
-
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }
-}
 // End of Stock API query
+
+const depositButton = document.getElementById('deposit-button');
+const withdrawButton = document.getElementById('withdraw-button');
+
+depositButton.addEventListener('click', () => {
+    const amount = parseFloat(document.getElementById('deposit-amount').value);
+    if (amount > 0) {
+        fetch('/deposit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId: sessionStorage.getItem("userId"), amount })
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if(data.status === 'success') {
+                    location.reload();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    } else {
+        alert('Please enter a valid deposit amount.');
+    }
+});
+
+withdrawButton.addEventListener('click', () => {
+    const amount = parseFloat(document.getElementById('withdraw-amount').value);
+    if (amount > 0) {
+        fetch('/withdraw', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId: sessionStorage.getItem("userId"), amount })
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if(data.status === 'success') {
+                    location.reload();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    } else {
+        alert('Please enter a valid withdrawal amount.');
+    }
+});

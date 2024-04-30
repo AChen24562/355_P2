@@ -1,5 +1,15 @@
+// Start blur image password
+const password = document.getElementById('password');
+const background = document.getElementById('background-image');
 
+password.addEventListener('input', (e) => {
+    const input = e.target.value;
+    const maxLength = 4;
+    const length = input.length;
+    const blurValue = Math.max(0, 20 - (length * (20 / maxLength)));
 
+    background.style.filter = `blur(${blurValue}px)`;
+});
 
 document.getElementById('login-btn').addEventListener('click', function() {
     const username = document.getElementById('username').value;

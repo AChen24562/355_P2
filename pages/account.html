@@ -37,11 +37,23 @@
 
     <div class="content">
         <h1>Account</h1>
-        <small>Florin</small>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Obcaecati, quod?</p>
-        <h3>Dog</h3>
-        <img src="" alt="image"/>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat, similique!</p>
+        <p>Total Account Balance: <span id="account-balance">$0.00</span></p>
+        <p>Available Balance: <span id="available-balance">$0.00</span></p>
+        <h2>Deposit Or Withdraw</h2>
+        <div class="deposit-withdraw-container">
+        <div class="deposit">
+                <h3>Deposit</h3>
+                <label for="deposit-amount">Amount</label>
+                <input type="number" id="deposit-amount" placeholder="0">
+                <button id="deposit-button">Deposit</button>
+            </div>
+            <div class="withdraw">
+                <h3>Withdraw</h3>
+                <label for="withdraw-amount">Amount</label>
+                <input type="number" id="withdraw-amount" placeholder="0">
+                <button id="withdraw-button">Withdraw</button>
+            </div>
+        </div>
     </div>
 </div>
 <nav>

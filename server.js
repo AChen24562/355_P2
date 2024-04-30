@@ -270,27 +270,104 @@ function updateUserAvailableBalance(userId, amount, db) {
     });
 }
 
+// Get user's info
+app.get('/get_user', (req, res) => {
+    const userId = req.query.userId;
+    if (!userId) {
+        return res.status(400).send({ status: 'error', message: 'UserID is required' });
+    }
+    const query = 'SELECT id, * FROM stock_user WHERE id = ?';
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).send({ status: 'error', message: 'Database query failed' });
+        }
+        if (results.length > 0) {
+            res.json(results[0]);
+        } else {
+            res.status(404).send({ status: 'error', message: 'User not found' });
+        }
+    });
+});
+
+
 // Get user's stock portfolio
 app.get('/get_portfolio', (req, res) => {
     const userId = req.query.userId;
     if (!userId) {
-        return res.status(400).json({ error: 'User ID is required' });
+        return res.status(400).send({ status: 'error', message: 'User ID is required' });
     }
 
     const query = 'SELECT * FROM stocks WHERE user_id = ?';
     db.query(query, [userId], (err, results) => {
         if (err) {
-            console.error('Error fetching user stocks:', err);
-            return res.status(500).json({ error: 'Error fetching user stocks' });
+            console.error('Error fetching portfolio:', err);
+            return res.status(500).send({ status: 'error', message: 'Error fetching portfolio' });
         }
-
-        // Returns an array of the stocks that correspond with user_id
-        console.log(results);
         res.json(results);
     });
 });
 
-// Query API
+// Handle deposit
+app.post('/deposit', (req, res) => {
+    const { userId, amount } = req.body;
+    if (amount <= 0) {
+        return res.status(400).json({ error: 'Deposit amount must be positive.' });
+    }
+    const query = 'UPDATE stock_user SET account_balance = account_balance + ? WHERE id = ?';
+    const query2 = 'UPDATE stock_user SET available_balance = available_balance + ? WHERE id = ?';
+    db.query(query, [amount, userId], (err, results) => {
+        if (err) {
+            console.error('Error updating account balance:', err);
+            return res.status(500).json({ error: 'Error processing deposit' });
+        }
+        db.query(query2, [amount, userId], (err, results) => {
+            if (err) {
+                console.error('Error updating account balance:', err);
+                return res.status(500).json({ error: 'Error processing deposit' });
+            }
+            // res.json({ status: 'success', message: 'Deposit successful' });
+        });
+        res.json({ status: 'success', message: 'Deposit successful' });
+    });
+
+});
+
+// Handle withdrawal
+app.post('/withdraw', (req, res) => {
+    const { userId, amount } = req.body;
+    if (amount <= 0) {
+        return res.status(400).json({ error: 'Withdrawal amount must be positive.' });
+    }
+    const query = 'UPDATE stock_user SET account_balance = account_balance - ? WHERE id = ? AND account_balance >= ?';
+    const query2 = 'UPDATE stock_user SET available_balance = available_balance - ? WHERE id = ? AND available_balance >= ?';
+
+    db.query(query, [amount, userId, amount], (err, results) => {
+        if (err) {
+            console.error('Error updating account balance:', err);
+            return res.status(500).json({ error: 'Error processing withdrawal' });
+        }
+        if (results.affectedRows === 0) {
+            return res.status(400).json({ error: 'Insufficient funds' });
+        }
+        db.query(query2, [amount, userId, amount], (err, results) => {
+            if (err) {
+                console.error('Error updating account balance:', err);
+                return res.status(500).json({ error: 'Error processing withdrawal' });
+            }
+            if (results.affectedRows === 0) {
+                return res.status(400).json({ error: 'Insufficient funds' });
+            }
+            // res.json({ status: 'success', message: 'Withdrawal successful' });
+        });
+        res.json({ status: 'success', message: 'Withdrawal successful' });
+    });
+
+});
+
+
+
+// Query API for stock price
 // Shouldn't use this in production, but it's fine for testing, should use env variables
 const FINNHUB_API_KEY = 'cojslk9r01qotadtbuogcojslk9r01qotadtbup0';
 
@@ -310,9 +387,51 @@ app.get('/api/quote', async (req, res) => {
         res.status(500).json({ error: 'Error fetching stock quote' });
     }
 });
-// End of query api
+// End of query api for stock price
+
+// Start of query API for financial info
+app.get('/api/financial', async (req, res) => {
+    try {
+        const symbol = req.query.symbol;
+        if (!symbol) {
+            return res.status(400).json({ error: 'Stock symbol is required' });
+        }
+
+        const toDate = new Date().toISOString().split('T')[0]; // gets today's date in YYYY-MM-DD
+        const fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split('T')[0]; // gets date one year ago
+
+        const url = `https://finnhub.io/api/v1/stock/financials-reported?symbol=${symbol}&token=${FINNHUB_API_KEY}&freq=quarterly&from=${fromDate}&to=${toDate}`;
+        const response = await axios.get(url);
+
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching financial info:', error);
+        res.status(500).json({ error: 'Error fetching financial info' });
+    }
+});
+
+app.get('/api/insider', async (req, res) => {
+    try {
+        const symbol = req.query.symbol;
+        if (!symbol) {
+            return res.status(400).json({error: 'Stock symbol is required'});
+        }
+
+        const toDate = new Date().toISOString().split('T')[0]; // today's date in YYYY-MM-DD
+        const fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split('T')[0]; // date one year ago
+
+        const url = `https://finnhub.io/api/v1/stock/insider-transactions?symbol=${symbol}&token=${FINNHUB_API_KEY}&from=${fromDate}&to=${toDate}`;
+        const response = await axios.get(url);
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching insider transactions:', error);
+        res.status(500).json({error: 'Error fetching insider transactions'});
+    }
+});
+// End insider transactions
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
+
