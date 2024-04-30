@@ -1,3 +1,9 @@
+//  start toast
+const button = document.getElementById('login-btn');
+const toasts = document.getElementById('toasts');
+// End toast
+
+
 // Start blur image password
 const password = document.getElementById('password');
 const background = document.getElementById('background-image');
@@ -10,6 +16,7 @@ password.addEventListener('input', (e) => {
 
     background.style.filter = `blur(${blurValue}px)`;
 });
+// END blur image password
 
 document.getElementById('login-btn').addEventListener('click', function() {
     const username = document.getElementById('username').value;
@@ -31,14 +38,16 @@ document.getElementById('login-btn').addEventListener('click', function() {
             if (data.status === 'success') {
                 sessionStorage.setItem('userId', data.userId);
                 sessionStorage.setItem('accountBalance', data.accountBalance);
+                sessionStorage.setItem('availableBalance', data.availableBalance);
                 window.location.href = '/home';
+                postToast('success', 'Login Successful')
             } else {
-                alert('Login Failed: ' + data.message);
+                postToast('error', 'Login Failed: ' + data.message)
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred during login, ensure node server is running');
+            postToast('error', 'An error occurred during login, ensure node server is running or login with the correct credentials')
         });
 });
 
@@ -57,13 +66,27 @@ document.getElementById('register-btn').addEventListener('click', function (){
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('Registration Successful');
+                postToast('success', 'Registration Successful, you can now login')
             } else {
-                alert('Registration Failed: ' + data.message);
+                postToast('error', 'Registration Failed: ' + data.message)
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred during registration');
+            postToast('error', 'An error occurred during registration, ensure node server is running')
         });
 })
+
+function postToast(warning, message){
+    const notif = document.createElement('div');
+    notif.classList.add('toast');
+    notif.classList.add(warning);
+
+    notif.innerText = message;
+    toasts.appendChild(notif);
+
+    setTimeout(() => {
+        notif.remove();
+    }, 3000);
+
+}

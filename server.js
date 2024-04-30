@@ -50,7 +50,7 @@ db.connect(err => {
 app.post('/login_user', (req, res) => {
     console.log(req.body);
     const { username, password } = req.body;
-    const query = 'SELECT id, password, account_balance FROM stock_user WHERE username = ?';
+    const query = 'SELECT * FROM stock_user WHERE username = ?';
     // Query database for user and if exists pass to request to home.html
     db.query(query, [username], (err, results) => {
         if (err) {
@@ -62,7 +62,8 @@ app.post('/login_user', (req, res) => {
             // Continue passing in the user id and account balance
             const userId = results[0].id;
             const accountBalance = results[0].account_balance;
-            return res.send({ status: 'success', message: 'Login successful', userId: userId, accountBalance: accountBalance });
+            const availableBalance = results[0].available_balance;
+            return res.send({ status: 'success', message: 'Login successful', userId: userId, accountBalance: accountBalance, availableBalance: availableBalance });
         }
         return res.status(401).send({ status: 'error', message: 'Invalid username or password' });
     });

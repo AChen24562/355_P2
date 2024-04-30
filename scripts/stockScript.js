@@ -12,6 +12,10 @@ let stockPrice = '';
 
 // Begin rotating navigation
 document.addEventListener('DOMContentLoaded', async function () {
+    const loader = document.querySelector('.kinetic');
+    loader.style.display = 'block';
+    loader.style.opacity = '1';
+
     const stockChosen = document.getElementById('stock-chosen');
     await getStockQuote(stockTicker);
     stockPrice = sessionStorage.getItem('currentPrice');
@@ -81,6 +85,15 @@ document.addEventListener('DOMContentLoaded', async function () {
             document.querySelector('.current-shares').innerHTML = '0';
             document.querySelector('.available-balance').innerHTML = `$${user_data[0]['available_balance']} available`;
             }
+            finally {
+            setTimeout(() => {
+                loader.style.opacity = '0';  // Start fading out the loader
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 500);
+
+        }
     }
     else{
         console.log('No user id found');
@@ -171,6 +184,9 @@ input.addEventListener('keypress', async function (event) {
 });
 
 async function getStockQuote(symbol) {
+    const loader = document.querySelector('.kinetic');
+    loader.style.display = 'block';
+    loader.style.opacity = '1';
     if (symbol) {
         try {
             const response = await fetch(`/api/quote?symbol=${encodeURIComponent(symbol)}`);
@@ -183,9 +199,16 @@ async function getStockQuote(symbol) {
             sessionStorage.setItem('currentPrice', data.c);
             sessionStorage.setItem('stockTicker', symbol);
 
-
         } catch (error) {
             console.error('Error:', error);
+        }
+        finally {
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 500);
         }
     }
 }

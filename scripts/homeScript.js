@@ -1,11 +1,4 @@
 // Rotating navigation
-document.addEventListener('DOMContentLoaded', function (){
-    const userId = sessionStorage.getItem("userId");
-    const accountBalance = sessionStorage.getItem('accountBalance')
-    console.log(userId);
-    console.log(accountBalance)
-})
-
 const open = document.getElementById('open');
 const close = document.getElementById('close');
 const container = document.querySelector('.container');
@@ -43,10 +36,6 @@ input.addEventListener('keypress', function(event) {
 // Display user's stock portfolio
 document.addEventListener('DOMContentLoaded', function () {
     const userId = sessionStorage.getItem("userId");
-    const accountBalance = sessionStorage.getItem('accountBalance')
-    const availableBalance = sessionStorage.getItem('availableBalance')
-    console.log(userId);
-    console.log(accountBalance)
 
     // Get array of stocks in the database by user_id
     fetch(`/get_portfolio?userId=${encodeURIComponent(userId)}`)
@@ -59,12 +48,14 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(portfolio => {
             const portfolioContainer = document.querySelector('.portfolio-container');
             const balanceContainer = document.querySelector('.balances-container');
-
+            const accountBalance = sessionStorage.getItem('accountBalance')
+            const availableBalance = sessionStorage.getItem('availableBalance')
             balanceContainer.innerHTML = `
                 <h2>Balances:</h2>
                 <p>Account Balance: $${parseFloat(accountBalance).toFixed(2)}</p>
                 <p>Available Balance: $${parseFloat(availableBalance).toFixed(2)}</p>            
                 `;
+            console.log(availableBalance)
             // If response successful, loop through the array and display each stock and info
             portfolio.forEach(stock => {
                 const stockDiv = document.createElement('div');
