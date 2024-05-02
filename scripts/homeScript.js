@@ -2,18 +2,23 @@
 const open = document.getElementById('open');
 const close = document.getElementById('close');
 const container = document.querySelector('.container');
+const searchBar = document.querySelector('.search-bar-container');
+const search = document.querySelector('.search');
 
-open.addEventListener('click', ()=>
-    container.classList.add('show-nav')
-)
+/* slide searchBar a little bit before starting the rotation */
+open.addEventListener('click', ()=> {
+    searchBar.classList.add('show-nav')
+    search.classList.remove('active')
+    setTimeout(() => container.classList.add('show-nav'), 100);
+})
 
-close.addEventListener('click', ()=>
+close.addEventListener('click', ()=> {
     container.classList.remove('show-nav')
-)
+    searchBar.classList.remove('show-nav')
+})
 // End of rotating navigation
 
-// Begin hidden Search
-const search = document.querySelector('.search')
+// Begin the hidden Search
 const btn = document.querySelector('.btn')
 const input = document.querySelector('.input')
 

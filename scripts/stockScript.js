@@ -1,6 +1,22 @@
+// Rotating navigation
 const open = document.getElementById('open');
 const close = document.getElementById('close');
 const container = document.querySelector('.container');
+const searchBar = document.querySelector('.search-bar-container');
+const search = document.querySelector('.search');
+
+/* slide searchBar a little bit before starting the rotation */
+open.addEventListener('click', ()=> {
+    searchBar.classList.add('show-nav')
+    search.classList.remove('active')
+    setTimeout(() => container.classList.add('show-nav'), 100);
+})
+
+close.addEventListener('click', ()=> {
+    container.classList.remove('show-nav')
+    searchBar.classList.remove('show-nav')
+})
+// End of rotating navigation
 
 // Input for no. of shares buy and sell
 const sharesBuy = document.getElementById('shares');
@@ -138,17 +154,7 @@ sellButton.addEventListener('click', () => {
 })
 // END adding listener for buy and sell
 
-open.addEventListener('click', ()=>
-    container.classList.add('show-nav')
-)
-
-close.addEventListener('click', ()=>
-    container.classList.remove('show-nav')
-)
-// End of rotating navigation
-
 // Begin hidden Search
-const search = document.querySelector('.search')
 const btn = document.querySelector('.btn')
 const input = document.querySelector('.input')
 

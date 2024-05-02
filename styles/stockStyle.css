@@ -7,10 +7,9 @@
 body{
     font-family: 'Lato', sans-serif;
     background-color: #333;
-    color:#222;
-
+    color: #222;
     overflow-x: hidden;
-    margin:0;
+    margin: 0;
 }
 
 /*SEARCH BAR CSS*/
@@ -23,6 +22,16 @@ body{
     /*height: 100vh;*/
     overflow: hidden;
     margin: 0;
+    position: absolute;
+    width: 100vw;
+    z-index: 1;
+    transform: translateX(0); /* initial position */
+    transition: transform 1s ease-out; /* Move search bar off-screen */
+}
+
+/* Move search bar off screen when rotating menu is pressed */
+.search-bar-container.show-nav {
+    transform: translateX(100%);
 }
 
 .search{
@@ -65,7 +74,8 @@ body{
 }
 /*END SEARCH BAR CSS*/
 
-.container{
+/* START OF ROTATING NAVIGATION */
+.container {
     background-color: #fafafa;
     transform-origin: top left;
     transition: transform 0.5s linear;
@@ -73,25 +83,26 @@ body{
     min-height: 100vh;
     padding: 50px;
 }
-.container.show-nav{
+.container.show-nav {
     transform: rotate(-20deg);
 }
-.circle-container{
+.circle-container {
     position: fixed;
     top: -100px;
-    left: -100px
+    left: -100px;
+    z-index: 2;
 }
 .circle{
     background-color: #ff7979;
     height: 200px;
     width: 200px;
     border-radius: 50%;
-    position: relative;
+    position: absolute;
     transition: transform 0.5s linear;
 }
 
-.container.show-nav .circle{
-    transform: rotate(-210deg);
+.container.show-nav .circle {
+    transform: rotate(-70deg);
 }
 
 .circle button{
@@ -113,7 +124,7 @@ body{
 }
 .circle button#close{
     top: 60%;
-    transform: rotate(180deg);
+    transform: rotate(90deg);
     transform-origin: top left;
 }
 .content img{
@@ -124,6 +135,7 @@ body{
     transform: translateX(0);
     transition-delay: 0.3s;
 }
+
 nav{
     position: fixed;
     bottom: 40px;

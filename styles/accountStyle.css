@@ -7,10 +7,9 @@
 body{
     font-family: 'Lato', sans-serif;
     background-color: #333;
-    color:#222;
-
+    color: #222;
     overflow-x: hidden;
-    margin:0;
+    margin: 0;
 }
 
 /*SEARCH BAR CSS*/
@@ -23,6 +22,16 @@ body{
     /*height: 100vh;*/
     overflow: hidden;
     margin: 0;
+    position: absolute;
+    width: 100vw;
+    z-index: 1;
+    transform: translateX(0); /* initial position */
+    transition: transform 1s ease-out; /* Move search bar off-screen */
+}
+
+/* Move search bar off screen when rotating menu is pressed */
+.search-bar-container.show-nav {
+    transform: translateX(100%);
 }
 
 .search{
@@ -65,7 +74,8 @@ body{
 }
 /*END SEARCH BAR CSS*/
 
-.container{
+/* START OF ROTATING NAVIGATION */
+.container {
     background-color: #fafafa;
     transform-origin: top left;
     transition: transform 0.5s linear;
@@ -79,22 +89,23 @@ body{
 .circle-container{
     position: fixed;
     top: -100px;
-    left: -100px
+    left: -100px;
+    z-index: 2;
 }
 .circle{
     background-color: #ff7979;
     height: 200px;
     width: 200px;
     border-radius: 50%;
-    position: relative;
+    position: absolute;
     transition: transform 0.5s linear;
 }
 
-.container.show-nav .circle{
-    transform: rotate(-210deg);
+.container.show-nav .circle {
+    transform: rotate(-70deg);
 }
 
-.circle button{
+.circle button {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -113,61 +124,62 @@ body{
 }
 .circle button#close{
     top: 60%;
-    transform: rotate(180deg);
+    transform: rotate(90deg);
     transform-origin: top left;
 }
 .content img{
     max-width: 100%;
 }
 
-.container.show-nav + nav li{
+.container.show-nav + nav li {
     transform: translateX(0);
     transition-delay: 0.3s;
 }
-nav{
+
+nav {
     position: fixed;
     bottom: 40px;
     left: 0;
     z-index: 100;
 }
 
-.nav ul{
+.nav ul {
     list-style-type: none;
     padding-left: 30px;
 }
-nav ul li{
+nav ul li {
     text-transform: uppercase;
     color: #fff;
     margin: 40px 0;
     transform: translateX(-100%);
     transition: transform 0.4s ease-in;
 }
-nav ul li i{
+nav ul li i {
     font-size: 20px;
     margin-right: 10px;
 }
-nav ul li + li{
+nav ul li + li {
     margin-left: 15px;
     transform: translateX(-150%);
 }
-nav ul li + li + li{
+nav ul li + li + li {
     margin-left: 30px;
     transform: translateX(-200%);
 }
-nav ul li + li + li + li{
+nav ul li + li + li + li {
     margin-left: 45px;
     transform: translateX(-250%);
 }
 
-.content{
+.content {
     max-width: 1000px;
     margin: 50px auto;
 
 }
-.content h1{
+.content h1 {
     margin: 0;
 }
-.content small{
+.content small {
     color: #555;
     font-style: italic;
 }
