@@ -116,3 +116,24 @@ body {
 .login-form button:hover {
     background-color: #3949AB;
 }
+
+/*Footer*/
+footer {
+    height: auto;
+    width: 100vw;
+    right: 0;
+    background-color: #0C111D;
+    color: white;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+/* Additional Info */
+.additional-info {
+    text-align: center;
+    width: auto;
+    padding: 20px;
+}

@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const axios = require('axios');
+require('dotenv').config();
 
 const app = express();
 app.use(cors());
@@ -33,7 +34,7 @@ const db_IP = '3.208.22.53';
 const db = mysql.createConnection({
     host: db_IP,
     user: 'user_355',
-    password: 'CS355!',
+    password: process.env.DB_PASS,
     database: 'stock_db'
 });
 
@@ -370,7 +371,7 @@ app.post('/withdraw', (req, res) => {
 
 // Query API for stock price
 // Shouldn't use this in production, but it's fine for testing, should use env variables
-const FINNHUB_API_KEY = 'cojslk9r01qotadtbuogcojslk9r01qotadtbup0';
+const FINNHUB_API_KEY = process.env.API_KEY;
 
 app.get('/api/quote', async (req, res) => {
     try {
