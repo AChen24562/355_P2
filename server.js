@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const axios = require('axios');
 require('dotenv').config();
+const bcrypt = require('bcrypt');
 
 const app = express();
 app.use(cors());
@@ -59,7 +60,7 @@ app.post('/login_user', (req, res) => {
             return res.status(500).send({ status: 'error', message: 'Database query failed' });
         }
 
-        if (results.length && results[0].password === password) {
+        if (results.length && bcrypt.compareSync(password, results[0].password)) {
             // Continue passing in the user id and account balance
             const userId = results[0].id;
             const accountBalance = results[0].account_balance;
@@ -74,10 +75,12 @@ app.post('/login_user', (req, res) => {
 // Add entry into stock_user table, creating a new user
 app.post('/register_user', (req, res) => {
     const { username, password } = req.body;
-    // TODO should also hash password
+
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
     const query = 'INSERT INTO stock_user (username, password) VALUES (?, ?)';
 
-    db.query(query, [username, password], (err, result) => {
+    db.query(query, [username, hashedPassword], (err, result) => {
         if (err) {
             return res.status(500).send({ status: 'error', message: err.message });
         }
