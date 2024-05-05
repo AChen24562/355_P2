@@ -289,3 +289,11 @@ nav ul li a:hover {
     background-color: lightblue;
     color: #fff;
 }
+
+#deposit-amount, #withdraw-amount {
+    margin: 10px;
+}
+
+#deposit-button, #withdraw-button {
+    margin: 10px 0;
+}
