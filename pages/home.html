@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>OnlyStocks</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
     <link rel="stylesheet" href="../styles/homeStyle.css">
+    <script src="../scripts/lightbox.js" defer></script>
 </head>
 <body>
 
@@ -48,6 +48,36 @@
 
         </div>
     </div>
+
+    <!-- Image Carousel -->
+    <article>
+        <h2>Interactive Slideshow</h2>
+        <p>To view your slides:</p>
+        <ul style="font-style: italic;">
+            <li>Click the Right or Left arrow buttons to move forward or backward through the image list.</li>
+            <li>Click the Play/Pause button to automatically move forward through the image list.</li>
+            <li>Click an image to view it in full screen mode.</li>
+        </ul>
+        <h1>TO-DO</h1>
+        <p>
+            Hi, we need to make some CSS changes. We need to fix the following...
+            <ul>
+                <li>Fix positioning of the buttons.</li>
+                <li>The Play/Pause button isn't clicking because it's being covered by the hidden nav.
+                    Although perhaps fixing positioning will fix this problem altogether.</li>
+                <li>When you click on an image...
+                    <ul>
+                        <li>The image isn't centered.</li>
+                        <li>The X button in the top right is very small.</li>
+                        <li>The caption (alt text) is hidden behind the image (can see with Inspect).</li>
+                    </ul>
+                </li>
+                <li>Replace images and captions with more relevant images and captions. What should they be about?</li>
+            </ul>
+        </p>
+
+        <div id="lightbox"></div>
+    </article>
 </div>
 <nav>
     <ul>
