@@ -1,6 +1,8 @@
 // Title of the slideshow
 let lightboxTitle = "We Love Stocks!";
 
+// Replace images and captions with more relevant images and captions. What should they be about?
+
 // Name of the image files shown in the slideshow
 let imgFiles = ["../images/stocks-img1.jpg", "../images/stocks-img2.jpg", "../images/stocks-img3.jpg",
   "../images/stocks-img4.jpg", "../images/stocks-img5.jpg", "../images/stocks-img6.jpg"];
@@ -79,17 +81,19 @@ function createLightbox() {
   lightBox.appendChild(lbPlay);
   lbPlay.id = "lbPlay";
   lbPlay.className = "lbButtons";
-  lbPlay.innerHTML = "&#9199";
+  lbPlay.innerHTML = "&#9658;&#10074;&#10074;";
   let timeID;
   lbPlay.onclick = function() {
     if (timeID) {
       // Stop the slideshow
       window.clearInterval(timeID);
       timeID = undefined;
+      lbPlay.innerHTML = "&#9658;";
     } else {
       // Start the slideshow
       showNext();
       timeID = window.setInterval(showNext, 1500);
+      lbPlay.innerHTML = "&#10074;&#10074;";
     }
   }
 

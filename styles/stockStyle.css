@@ -14,16 +14,16 @@ body{
 
 /*SEARCH BAR CSS*/
 .search-bar-container{
-    background-image: linear-gradient(90deg, #7d5, #7158e2);
+    background-image: linear-gradient(90deg, #85E067, #5337D3);
     font-family: 'Lato', 'sans-serif';
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     /*height: 100vh;*/
     overflow: hidden;
     margin: 0;
     position: absolute;
-    width: 100vw;
+    width: 100%;
     z-index: 1;
     transform: translateX(0); /* initial position */
     transition: transform 1s ease-out; /* Move search bar off-screen */
@@ -65,12 +65,13 @@ body{
     width: 200px;
 }
 .search.active .btn{
-    transform: translateX(198px);
+    transform: translateX(150px);
 }
 
 #input-label{
     font-weight: bold;
     margin-right: 25px;
+    color: white;
 }
 /*END SEARCH BAR CSS*/
 
@@ -93,7 +94,7 @@ body{
     z-index: 2;
 }
 .circle{
-    background-color: #ff7979;
+    background-color: #5337D3;
     height: 200px;
     width: 200px;
     border-radius: 50%;
@@ -105,7 +106,7 @@ body{
     transform: rotate(-70deg);
 }
 
-.circle button{
+.circle button {
     position: absolute;;
     top: 50%;
     left: 50%;
@@ -131,59 +132,58 @@ body{
     max-width: 100%;
 }
 
-.container.show-nav + nav li{
+.container.show-nav + nav li {
     transform: translateX(0);
     transition-delay: 0.3s;
 }
 
-nav{
+nav {
     position: fixed;
     bottom: 40px;
     left: 0;
     z-index: 100;
 }
 
-.nav ul{
+nav ul {
     list-style-type: none;
     padding-left: 30px;
 }
-nav ul li{
+nav ul li {
     text-transform: uppercase;
     color: #fff;
     margin: 40px 0;
     transform: translateX(-100%);
     transition: transform 0.4s ease-in;
 }
-nav ul li i{
+nav ul li i {
     font-size: 20px;
     margin-right: 10px;
 }
-nav ul li + li{
+nav ul li + li {
     margin-left: 15px;
     transform: translateX(-150%);
 }
-nav ul li + li + li{
+nav ul li + li + li {
     margin-left: 30px;
     transform: translateX(-200%);
 }
-nav ul li + li + li + li{
+nav ul li + li + li + li {
     margin-left: 45px;
     transform: translateX(-250%);
 }
 
-.content{
+.content {
     max-width: 1000px;
     margin: 50px auto;
-
 }
-.content h1{
+.content h1 {
     margin: 0;
 }
-.content small{
+.content small {
     color: #555;
     font-style: italic;
 }
-.content p{
+.content p {
     color: #333;
     line-height: 1.5;
 }
@@ -309,9 +309,10 @@ nav ul li a:hover {
     width: 80px;
     z-index: 9999;
     display: none;
-    opacity: 0;  // Start with the loader being invisible
-transition: opacity 0.5s ease-in-out;
+    opacity: 0;  /* Start with the loader being invisible */
+    transition: opacity 0.5s ease-in-out;
 }
+
 .kinetic::after, .kinetic::before{
     content: '';
     position: absolute;
@@ -345,8 +346,9 @@ transition: opacity 0.5s ease-in-out;
 
 /*Footer*/
 footer {
+    min-height: 100px;
     height: auto;
-    width: 100vw;
+    width: 100%;
     right: 0;
     background-color: #0C111D;
     color: white;
