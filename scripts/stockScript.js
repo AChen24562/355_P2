@@ -90,9 +90,13 @@ document.addEventListener('DOMContentLoaded', async function () {
             sessionStorage.setItem('currentShares', stock_data[0]['quantity']);
             sessionStorage.setItem('availableBalance', user_data[0]['available_balance'])
             console.log(user_data[0]['available_balance'])
+            let numShares = 0;
+            for (let i = 0; i < stock_data.length; i++) {
+                numShares += stock_data[i]['quantity'];
+            }
             console.log(stock_data[0]['quantity'])
 
-            currentShares.innerHTML = `${stock_data[0]['quantity']}`;
+            currentShares.innerHTML = `${numShares}`;
             document.querySelector('.available-balance').innerHTML = `$${user_data[0]['available_balance']} available`;
         }
         catch (error){
@@ -131,7 +135,8 @@ buyButton.addEventListener('click', () => {
     const shares = parseInt(document.getElementById('shares').value);
     const purchasePrice = parseFloat(sessionStorage.getItem('estimatedCostBuy'));
     const currentBalance = parseFloat(sessionStorage.getItem('availableBalance'));
-
+    console.log(currentBalance);
+    console.log(purchasePrice);
     if (shares > 0 && purchasePrice <= currentBalance) {
         console.log(purchasePrice < currentBalance)
         buyStock(shares, purchasePrice);
