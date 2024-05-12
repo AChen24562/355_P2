@@ -435,6 +435,43 @@ app.get('/api/insider', async (req, res) => {
 });
 // End insider transactions
 
+// Chatbot (involves Wit.AI, tool for NLP)
+const { Wit } = require('node-wit');
+class WitService {
+    constructor(accessToken) {
+        this.client = new Wit({ accessToken });
+    }
+
+    async query(text) {
+        return await this.client.message(text);
+
+        // const result = queryResult;
+        // console.log("here");
+        // console.log(result);
+        // return result;
+    }
+}
+
+const witService = new WitService('KJCEUQ4QLUH4NXSQ4XHASGXHW6PDC2R3');
+// console.log(witService);
+
+// Route to handle POST request from the client
+app.post('/query-wit', express.json(), async (req, res) => {
+    const { message } = req.body;
+    if (!message) {
+        return res.status(400).json({ error: 'Please provide a text input (string)' });
+    }
+
+    try {
+        // Pass along the results of the query.
+        res.json(await witService.query(message));
+    } catch (error) {
+        console.error('Error in /query-wit:', error);
+        res.status(500).send({ error: 'Failed to fetch data from Wit.ai' });
+    }
+});
+
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

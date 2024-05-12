@@ -6,10 +6,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../styles/homeStyle.css">
     <script src="../scripts/lightbox.js" defer></script>
+    <script src="../scripts/chatbot.js" defer></script>
 </head>
 <body>
 
-<!--Hidden Search widget-->
+<!--Start of Hidden Search widget-->
 <div class="search-bar-container">
     <label for="input" class="label" id="input-label">Search A Stock</label>
     <div class="search">
@@ -21,7 +22,7 @@
     </div>
 
 </div>
-<!--Hidden Search Widget-->
+<!--End of Hidden Search Widget-->
 
 <!--START OF ROTATING NAV-->
 <div class="container">
@@ -67,6 +68,19 @@
     </ul>
 </nav>
 <!--END OF ROTATING NAV-->
+
+<!--START OF CHATBOT-->
+<div id="chat-icon" class="chat-open-close">&#128172;</div>
+<div id="chat-area">
+    <h2>Chat History</h2>
+    <p id="chat-history"><em>Enter a message to start the conversation...</em></p>
+    <form id="chatForm">
+        Enter a message: <input id="chat-box" type="text">
+        <input id="send-btn" type="submit" value="Send">
+        <button class="chat-open-close">&#120;</button>
+    </form>
+</div>
+<!--END OF CHATBOT-->
 
 <footer>
     <div class="additional-info">
