@@ -127,7 +127,11 @@ chatForm.addEventListener('submit', async function (event) {
             textResponse += '\nI didn\'t quite catch that.';
           }
         } else {
-          textResponse += 'Transaction complete ;)';
+          if (action.toLowerCase() === 'sell') {
+            textResponse += 'Sell transaction complete!'
+          } else {
+            textResponse += 'Buy transaction complete ;)';
+          }
         }
       } else if (messageIntent === 'info') {
         textResponse += 'We are OnlyStocks, a stock trading platform.\n\n' +

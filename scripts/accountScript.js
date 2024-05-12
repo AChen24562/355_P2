@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data) {
                 console.log(data);
-                document.getElementById('account-balance').textContent = `$${parseFloat(data[0].account_balance).toFixed(2)}`;
-                document.getElementById('available-balance').textContent = `$${parseFloat(data[0].available_balance).toFixed(2)}`;
+                document.getElementById('account-balance').textContent = `$${parseFloat(data[0].account_balance).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}`;
+                document.getElementById('available-balance').textContent = `$${parseFloat(data[0].available_balance).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}`;
             } else {
                 console.log('No data received');
             }

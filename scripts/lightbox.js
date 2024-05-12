@@ -1,27 +1,17 @@
-// Title of the slideshow
-let lightboxTitle = "We Love Stocks!";
-
-// Replace images and captions with more relevant images and captions. What should they be about?
+let lightboxTitle = "Top Market Movers";
 
 // Name of the image files shown in the slideshow
-let imgFiles = ["../images/stocks-img1.jpg", "../images/stocks-img2.jpg", "../images/stocks-img3.jpg",
+let imgFiles = ["../images/stocks-img1.jpg", "../images/stocks-img2.png", "../images/stocks-img3.jpg",
   "../images/stocks-img4.jpg", "../images/stocks-img5.jpg", "../images/stocks-img6.jpg"];
 
 // Captions associated with each image
 let imgCaptions = new Array(12);
-imgCaptions[0]="stocks";
-imgCaptions[1]="more stocks!";
-imgCaptions[2]="wow there are a lot of sto";
-imgCaptions[3]="um.. maybe we can stop with the s";
-imgCaptions[4]="STOCKS STOCKS STOCKS MONEY MONEY MONEY BANDS BANDS BANDS";
-imgCaptions[5]="...um...";
-imgCaptions[6]="HERE COMES THE MONAYYYYYYY";
-// imgCaptions[7]="";
-// imgCaptions[8]="";
-// imgCaptions[9]="";
-// imgCaptions[10]="";
-// imgCaptions[11]="";
-// imgCaptions[12]="";
+imgCaptions[0]="Nvidia Corp. (NVDA)";
+imgCaptions[1]="Alphabet Inc. (GOOG, GOOGL)";
+imgCaptions[2]="Meta Platforms Inc. (META)";
+imgCaptions[3]="JPMorgan Chase & Co. (JPM)";
+imgCaptions[4]="Tesla Inc. (TSLA)";
+imgCaptions[5]="Apple Inc. (AAPL)";
 
 // Count of images in the slideshow
 let imgCount = imgFiles.length;

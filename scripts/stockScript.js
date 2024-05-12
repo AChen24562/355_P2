@@ -42,8 +42,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
     // Update buy/sell form on market data
-    document.getElementById('marketPrice').innerHTML = `${parseFloat(stockPrice).toFixed(2)}`;
-    document.getElementById('marketPrice-sell').innerHTML = `${parseFloat(stockPrice).toFixed(2)}`;
+    document.getElementById('marketPrice').innerHTML = `$${parseFloat(stockPrice).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}`;
+    document.getElementById('marketPrice-sell').innerHTML = `$${parseFloat(stockPrice).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}`;
 
     // Add event listener for input on the number of stocks being bought/sold
     sharesBuy.addEventListener('input', function() {
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if(shares){
             const estimatedCost = shares * parseFloat(stockPrice);
             console.log(estimatedCost);
-            document.getElementById('estimatedCost').innerHTML = `$${estimatedCost.toFixed(2)}`;
+            document.getElementById('estimatedCost').innerHTML = `$${estimatedCost.toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}`;
             sessionStorage.setItem('estimatedCostBuy', estimatedCost.toString());
         }
         else{
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             else{
                 const estimatedCost = shares * parseFloat(stockPrice);
                 console.log(estimatedCost);
-                document.getElementById('estimatedCost-sell').innerHTML = `$${estimatedCost.toFixed(2)}`;
+                document.getElementById('estimatedCost-sell').innerHTML = `$${estimatedCost.toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}`;
             }
         }
         else{
@@ -90,14 +90,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             sessionStorage.setItem('currentShares', stock_data[0]['quantity']);
             sessionStorage.setItem('availableBalance', user_data[0]['available_balance'])
             console.log(user_data[0]['available_balance'])
-            let numShares = 0;
-            for (let i = 0; i < stock_data.length; i++) {
-                numShares += stock_data[i]['quantity'];
-            }
             console.log(stock_data[0]['quantity'])
 
-            currentShares.innerHTML = `${numShares}`;
-            document.querySelector('.available-balance').innerHTML = `$${user_data[0]['available_balance']} available`;
+            currentShares.innerHTML = `${stock_data[0]['quantity']}`;
+            document.querySelector('.available-balance').innerHTML = `$${parseFloat(user_data[0]['available_balance']).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})} available`;
         }
         catch (error){
             console.log('User does not have this stock');
@@ -135,8 +131,7 @@ buyButton.addEventListener('click', () => {
     const shares = parseInt(document.getElementById('shares').value);
     const purchasePrice = parseFloat(sessionStorage.getItem('estimatedCostBuy'));
     const currentBalance = parseFloat(sessionStorage.getItem('availableBalance'));
-    console.log(currentBalance);
-    console.log(purchasePrice);
+
     if (shares > 0 && purchasePrice <= currentBalance) {
         console.log(purchasePrice < currentBalance)
         buyStock(shares, purchasePrice);
