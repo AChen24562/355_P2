@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>OnlyStocks</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
     <link rel="stylesheet" href="../styles/stockStyle.css">
+    <script src="../scripts/chatbot.js" defer></script>
 </head>
 <body>
 <!--    Kinetic Loader -->
@@ -27,6 +27,7 @@
 </div>
 <!--Hidden Search Widget-->
 
+<!--START OF ROTATING NAV-->
 <div class="container">
     <div class="circle-container">
         <div class="circle">
@@ -79,7 +80,6 @@
             </div>
         </div>
 
-
     </div>
 </div>
 <nav>
@@ -90,8 +90,22 @@
             <li><a href="/"><i class="fa-solid fa-xmark"></i> Log Out</a></li>
         </ul>
     </ul>
-
 </nav>
+<!--END OF ROTATING NAV-->
+
+<!--START OF CHATBOT-->
+<div id="chat-icon" class="chat-open-close">&#128172;</div>
+<div id="chat-area">
+    <h2>Chat History</h2>
+    <p id="chat-history"><em>Enter a message to start the conversation...</em></p>
+    <form id="chatForm">
+        Enter a message: <input id="chat-box" type="text">
+        <input id="send-btn" type="submit" value="Send">
+        <button class="chat-open-close">&#120;</button>
+    </form>
+</div>
+<!--END OF CHATBOT-->
+
 <!--End Search widget-->
 <footer>
     <div class="additional-info">

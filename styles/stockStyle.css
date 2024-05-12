@@ -365,3 +365,41 @@ footer {
     width: auto;
     padding: 20px;
 }
+
+/* Chatbot */
+#chat-icon {
+    position: fixed;
+    cursor: pointer;
+    font-size: 32px;
+    right: 50px;
+    bottom: 50px;
+    background-color: #5337D3;
+    border: solid black;
+    color: white;
+    z-index: 5;
+}
+.chat-open-close {
+    cursor: pointer;
+}
+#chat-area {
+    display: none;
+    position: fixed;
+    padding: 0 10px 10px 10px;
+    right: 50px;
+    bottom: 50px;
+    background-color: #5337D3;
+    border: solid black;
+    z-index: 5;
+    color: white;
+}
+input[type="submit"] {
+    cursor: pointer;
+}
+#chat-history {
+    padding: 5px;
+    width: 40vh;
+    height: 40vh;
+    overflow: auto;
+    background-color: lightgray;
+    color: black;
+}
