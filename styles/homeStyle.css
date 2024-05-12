@@ -268,7 +268,7 @@ footer {
 
 #lbImages img {
     height: 40vh;
-    width: auto;
+    width: 55vh;
     object-fit: cover;
     margin: 10px 40px 20px 0px;
     cursor: pointer;
