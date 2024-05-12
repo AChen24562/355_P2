@@ -42,8 +42,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
     // Update buy/sell form on market data
-    document.getElementById('marketPrice').innerHTML = `${parseFloat(stockPrice).toFixed(2)}`;
-    document.getElementById('marketPrice-sell').innerHTML = `${parseFloat(stockPrice).toFixed(2)}`;
+    document.getElementById('marketPrice').innerHTML = `$${parseFloat(stockPrice).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}`;
+    document.getElementById('marketPrice-sell').innerHTML = `$${parseFloat(stockPrice).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}`;
 
     // Add event listener for input on the number of stocks being bought/sold
     sharesBuy.addEventListener('input', function() {
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if(shares){
             const estimatedCost = shares * parseFloat(stockPrice);
             console.log(estimatedCost);
-            document.getElementById('estimatedCost').innerHTML = `$${estimatedCost.toFixed(2)}`;
+            document.getElementById('estimatedCost').innerHTML = `$${estimatedCost.toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}`;
             sessionStorage.setItem('estimatedCostBuy', estimatedCost.toString());
         }
         else{
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             else{
                 const estimatedCost = shares * parseFloat(stockPrice);
                 console.log(estimatedCost);
-                document.getElementById('estimatedCost-sell').innerHTML = `$${estimatedCost.toFixed(2)}`;
+                document.getElementById('estimatedCost-sell').innerHTML = `$${estimatedCost.toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}`;
             }
         }
         else{
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.log(stock_data[0]['quantity'])
 
             currentShares.innerHTML = `${stock_data[0]['quantity']}`;
-            document.querySelector('.available-balance').innerHTML = `$${user_data[0]['available_balance']} available`;
+            document.querySelector('.available-balance').innerHTML = `$${parseFloat(user_data[0]['available_balance']).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})} available`;
         }
         catch (error){
             console.log('User does not have this stock');

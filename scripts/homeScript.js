@@ -57,8 +57,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const availableBalance = sessionStorage.getItem('availableBalance')
             balanceContainer.innerHTML = `
                 <h2>Balances:</h2>
-                <p>Account Balance: $${parseFloat(accountBalance).toFixed(2)}</p>
-                <p>Available Balance: $${parseFloat(availableBalance).toFixed(2)}</p>            
+                <p>Account Balance: $${parseFloat(accountBalance).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>
+                <p>Available Balance: $${parseFloat(availableBalance).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>            
                 `;
             console.log(availableBalance)
             // If response successful, loop through the array and display each stock and info
@@ -68,9 +68,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 stockDiv.innerHTML = `
                     <p>Ticker: ${stock.ticker.toUpperCase()}</p>
                     <p>Quantity: ${stock.quantity}</p>
-                    <p>Current Price: $${stock.current_price}</p>
-                    <p>Purchase Price: $${stock.price_purchased}</p>
-                    <p>Profit: $${(stock.current_price - stock.price_purchased) * stock.quantity}</p>
+                    <p>Current Price: $${parseFloat(stock.current_price).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>
+                    <p>Purchase Price: $${parseFloat(stock.price_purchased).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>
+                    <p>Profit: $${parseFloat((stock.current_price - stock.price_purchased) * stock.quantity).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>
                 `;
                 stockDiv.addEventListener('click', () =>{
                     sessionStorage.setItem('stockTicker', stock.ticker);
