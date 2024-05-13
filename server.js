@@ -216,7 +216,7 @@ app.post('/sell_stock', (req, res) => {
         }
 
         try {
-            // Fetch all stock entries for the user and ticker, ordered by some criteria (optional)
+            // Fetch all stock entries for the user and ticker, ordered by some criteria (possibly date)
             const stockEntries = await fetchStockEntries(db, userId, ticker);
 
             // Determine how many shares need to be sold
@@ -266,7 +266,7 @@ function fetchStockEntries(db, userId, ticker) {
 
 function updateStockEntry(db, stockId, sharesSold, currentPrice) {
     return new Promise((resolve, reject) => {
-        // First, update the stock quantity
+        // Update the stock quantity
         const updateQuery = 'UPDATE stocks SET quantity = quantity - ? WHERE user_id = ? AND quantity >= ?';
         db.query(updateQuery, [sharesSold, stockId, sharesSold], (err, result) => {
             if (err) {

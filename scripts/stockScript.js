@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById('marketPrice-sell').innerHTML = `$${parseFloat(stockPrice).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}`;
 
     // Add event listener for input on the number of stocks being bought/sold
+    // Should check if the no. shares bought exceeds available balance
     sharesBuy.addEventListener('input', function() {
         const shares = parseInt(sharesBuy.value);
         if(shares){
@@ -59,6 +60,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     })
 
+    // Add event listener for input on the number of stocks being sold, take in input for no. shares
+    // Should also check if the no. shares sold exceeds amount owned.
     sharesSell.addEventListener('input', function() {
         const shares = parseInt(sharesSell.value);
         if(shares){
@@ -82,7 +85,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         let user_data = await getUser(userId);
 
         console.log(stock_data)
-
         // console.log(stock_data[0]['ticker']);
         try{
             const currentShares = document.querySelector('.current-shares');
@@ -367,7 +369,7 @@ async function displayInsiderTransactions(ticker) {
         buys.sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
         sells.sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
 
-        // Limit to top 10 for each category of sell and buy or grants
+        // Limit to top 10 for each category of sell and buy or grants from insiders
         buys = buys.slice(0, 10);
         sells = sells.slice(0, 10);
 

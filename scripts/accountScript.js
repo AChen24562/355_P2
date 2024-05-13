@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/';
         return;
     }
-
+    // Load user balance to display based on user id which is stored in session storage
     fetch(`/get_user?userId=${encodeURIComponent(userId)}`)
         .then(response => response.json())
         .then(data => {
@@ -66,6 +66,7 @@ input.addEventListener('keypress', function(event) {
 const depositButton = document.getElementById('deposit-button');
 const withdrawButton = document.getElementById('withdraw-button');
 
+// Deposit button, when clicked take in value in text box send a query to DB to add the value in
 depositButton.addEventListener('click', () => {
     const amount = parseFloat(document.getElementById('deposit-amount').value);
     if (amount > 0) {
@@ -89,6 +90,7 @@ depositButton.addEventListener('click', () => {
     }
 });
 
+// Deposit button, when clicked take in value in text box send a query to DB to take the value out
 withdrawButton.addEventListener('click', () => {
     const amount = parseFloat(document.getElementById('withdraw-amount').value);
     if (amount > 0) {
