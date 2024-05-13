@@ -42,6 +42,30 @@ input.addEventListener('keypress', function(event) {
 document.addEventListener('DOMContentLoaded', function () {
     const userId = sessionStorage.getItem("userId");
 
+    const portfolioContainer = document.querySelector('.portfolio-container');
+    const balanceContainer = document.querySelector('.balances-container');
+
+    fetch(`/get_user?userId=${encodeURIComponent(userId)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+
+                balanceContainer.innerHTML = `
+                <h2>Balances:</h2>
+                <p>Account Balance: $${parseFloat(data[0].account_balance).toFixed(2)}</p>
+                <p>Available Balance: $${parseFloat(data[0].available_balance).toFixed(2)}</p>            
+                `;
+                sessionStorage.setItem("accountBalance", parseFloat(data[0].account_balance).toFixed(2));
+                sessionStorage.setItem("availableBalance", parseFloat(data[0].available_balance).toFixed(2));
+            } else {
+                console.log('No data received');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+            alert('Error fetching account details');
+        });
+
     // Get array of stocks in the database by user_id
     fetch(`/get_portfolio?userId=${encodeURIComponent(userId)}`)
         .then(response => {
@@ -51,32 +75,25 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(portfolio => {
-            const portfolioContainer = document.querySelector('.portfolio-container');
-            const balanceContainer = document.querySelector('.balances-container');
-            const accountBalance = sessionStorage.getItem('accountBalance')
-            const availableBalance = sessionStorage.getItem('availableBalance')
-            balanceContainer.innerHTML = `
-                <h2>Balances:</h2>
-                <p>Account Balance: $${parseFloat(accountBalance).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>
-                <p>Available Balance: $${parseFloat(availableBalance).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>            
-                `;
-            console.log(availableBalance)
+
             // If response successful, loop through the array and display each stock and info
             portfolio.forEach(stock => {
-                const stockDiv = document.createElement('div');
-                stockDiv.classList.add('stock-item');
-                stockDiv.innerHTML = `
+                if(stock.quantity !== 0){
+                    const stockDiv = document.createElement('div');
+                    stockDiv.classList.add('stock-item');
+                    stockDiv.innerHTML = `
                     <p>Ticker: ${stock.ticker.toUpperCase()}</p>
                     <p>Quantity: ${stock.quantity}</p>
-                    <p>Current Price: $${parseFloat(stock.current_price).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>
-                    <p>Purchase Price: $${parseFloat(stock.price_purchased).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>
-                    <p>Profit: $${parseFloat((stock.current_price - stock.price_purchased) * stock.quantity).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>
+                    <p>Current Price: $${stock.current_price}</p>
+                    <p>Purchase Price: $${stock.price_purchased}</p>
+                    <p>Profit: $${(stock.current_price - stock.price_purchased) * stock.quantity}</p>
                 `;
-                stockDiv.addEventListener('click', () =>{
-                    sessionStorage.setItem('stockTicker', stock.ticker);
-                    window.location.href = '/stock';
-                })
-                portfolioContainer.appendChild(stockDiv);
+                    stockDiv.addEventListener('click', () =>{
+                        sessionStorage.setItem('stockTicker', stock.ticker);
+                        window.location.href = '/stock';
+                    })
+                    portfolioContainer.appendChild(stockDiv);
+                }
             });
         })
         .catch(error => {

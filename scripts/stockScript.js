@@ -91,8 +91,11 @@ document.addEventListener('DOMContentLoaded', async function () {
             sessionStorage.setItem('availableBalance', user_data[0]['available_balance'])
             console.log(user_data[0]['available_balance'])
             console.log(stock_data[0]['quantity'])
-
-            currentShares.innerHTML = `${stock_data[0]['quantity']}`;
+            let numShares = 0;
+            for (let i = 0; i < stock_data.length; i++) {
+                numShares += stock_data[i]['quantity'];
+            }
+            currentShares.innerHTML = `${numShares}`;
             document.querySelector('.available-balance').innerHTML = `$${parseFloat(user_data[0]['available_balance']).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})} available`;
         }
         catch (error){
