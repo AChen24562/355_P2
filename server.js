@@ -150,7 +150,7 @@ app.post('/buy_stock', (req, res) => {
                 });
             }
 
-            const currentBalance = results[0].account_balance;
+            const currentBalance = results[0].availableBalance;
             console.log(currentBalance);
             console.log(sharesToBuy + " " + totalCost);
             if (currentBalance < totalCost) {
@@ -228,7 +228,7 @@ app.post('/sell_stock', (req, res) => {
                 remainingSharesToSell -= sharesFromThisEntry;
 
                 // Update the stock entry with the new quantity or remove it if zero
-                await updateStockEntry(db, entry.id, sharesFromThisEntry, currentPrice);
+                await updateStockEntry(db, entry.uuid, sharesFromThisEntry, currentPrice);
             }
 
             // If we cannot fulfill the complete order
@@ -264,30 +264,47 @@ function fetchStockEntries(db, userId, ticker) {
     });
 }
 
-function updateStockEntry(db, stockId, sharesSold, currentPrice) {
+function updateStockEntry(db, stockId, sharesSold) {
     return new Promise((resolve, reject) => {
-        // Update the stock quantity
-        const updateQuery = 'UPDATE stocks SET quantity = quantity - ? WHERE user_id = ? AND quantity >= ?';
+        // Ensure stockId and sharesSold are correct and logs
+        console.log(`Attempting to sell ${sharesSold} shares from stock ID ${stockId}`);
+
+        const updateQuery = 'UPDATE stocks SET quantity = quantity - ? WHERE uuid = ? AND quantity >= ?';
         db.query(updateQuery, [sharesSold, stockId, sharesSold], (err, result) => {
             if (err) {
+                console.error('SQL Error:', err);
                 reject(err);
+            } else if (result.affectedRows === 0) {
+                console.error('Attempt to sell more shares than available');
+                reject(new Error('Not enough shares to sell'));
             } else {
                 // Check if the updated quantity is zero and delete the row if it is
-                const checkQuery = 'DELETE FROM stocks WHERE user_id = ? AND quantity = 0';
+                const checkQuery = 'DELETE FROM stocks WHERE uuid = ? AND quantity = 0';
                 db.query(checkQuery, [stockId], (err, delResult) => {
-                    if (err) reject(err);
-                    else resolve(delResult);
+                    if (err) {
+                        console.error('Deletion Error:', err);
+                        reject(err);
+                    } else {
+                        console.log('Stock update and cleanup successful');
+                        resolve(delResult);
+                    }
                 });
             }
         });
     });
 }
+
 // TODO use this function to update users' available account balance
 // Update user's available balance
 function updateUserBalance(db, userId, amount) {
     return new Promise((resolve, reject) => {
         const query = 'UPDATE stock_user SET available_balance = available_balance + ? WHERE id = ?';
         db.query(query, [amount, userId], (err, result) => {
+            if (err) reject(err);
+            else resolve(result);
+        });
+        const accountBalanceUpdate = 'UPDATE stock_user SET account_balance = account_balance + ? WHERE id = ?';
+        db.query(accountBalanceUpdate, [amount, userId], (err, result) => {
             if (err) reject(err);
             else resolve(result);
         });
