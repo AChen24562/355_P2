@@ -52,11 +52,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 balanceContainer.innerHTML = `
                 <h2>Balances:</h2>
-                <p>Account Balance: $${parseFloat(data[0].account_balance).toFixed(2)}</p>
-                <p>Available Balance: $${parseFloat(data[0].available_balance).toFixed(2)}</p>            
+                <p>Account Balance: $${parseFloat(data[0].account_balance).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>
+                <p>Available Balance: $${parseFloat(data[0].available_balance).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>            
                 `;
-                sessionStorage.setItem("accountBalance", parseFloat(data[0].account_balance).toFixed(2));
-                sessionStorage.setItem("availableBalance", parseFloat(data[0].available_balance).toFixed(2));
+                sessionStorage.setItem("accountBalance", parseFloat(data[0].account_balance).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2}));
+                sessionStorage.setItem("availableBalance", parseFloat(data[0].available_balance).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2}));
             } else {
                 console.log('No data received');
             }
@@ -84,9 +84,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     stockDiv.innerHTML = `
                     <p>Ticker: ${stock.ticker.toUpperCase()}</p>
                     <p>Quantity: ${stock.quantity}</p>
-                    <p>Current Price: $${stock.current_price}</p>
-                    <p>Purchase Price: $${stock.price_purchased}</p>
-                    <p>Profit: $${(stock.current_price - stock.price_purchased) * stock.quantity}</p>
+                    <p>Current Price: $${parseFloat(stock.current_price).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>
+                    <p>Purchase Price: $${parseFloat(stock.price_purchased).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>
+                    <p>Profit: $${((stock.current_price - stock.price_purchased) * stock.quantity).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</p>
                 `;
                     stockDiv.addEventListener('click', () =>{
                         sessionStorage.setItem('stockTicker', stock.ticker);

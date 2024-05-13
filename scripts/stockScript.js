@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     console.log(stockTicker);
     console.log(userId);
     console.log(stockPrice);
-    stockChosen.innerHTML = `Stock: ${stockTicker.toUpperCase()} <br> Price: $${parseFloat(stockPrice).toFixed(2)}`;
+    stockChosen.innerHTML = `Stock: ${stockTicker.toUpperCase()} <br> Price: $${parseFloat(stockPrice).toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}`;
 
 
     // Update buy/sell form on market data
@@ -377,7 +377,7 @@ async function displayInsiderTransactions(ticker) {
         if (buys.length > 0) {
             content += `<div><strong>Top Buys:</strong></div>`;
             buys.forEach(transaction => {
-                content += `<div>${transaction.name} - Shares Bought: ${transaction.change}, Price: $${transaction.transactionPrice.toFixed(2)}</div>`;
+                content += `<div>${transaction.name} - Shares Bought: ${transaction.change}, Price: $${transaction.transactionPrice.toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</div>`;
             });
         }
 
@@ -385,7 +385,7 @@ async function displayInsiderTransactions(ticker) {
         if (sells.length > 0) {
             content += `<div><strong>Top Sells:</strong></div>`;
             sells.forEach(transaction => {
-                content += `<div>${transaction.name} - Shares Sold: ${Math.abs(transaction.change)}, Price: $${transaction.transactionPrice.toFixed(2)}</div>`;
+                content += `<div>${transaction.name} - Shares Sold: ${Math.abs(transaction.change)}, Price: $${transaction.transactionPrice.toLocaleString("en-US", {style: "decimal", minimumFractionDigits: 2})}</div>`;
             });
         }
 
