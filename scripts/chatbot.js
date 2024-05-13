@@ -165,7 +165,7 @@ chatForm.addEventListener('submit', async function (event) {
               } else if (shares > totalShares) {
                 textResponse += 'You don\'t own that many shares!';
               } else {
-                sellMyStock(sessionStorage.getItem('stockTicker'), shares, shares * sessionStorage.getItem('currentPrice'));
+                sellMyStock(sessionStorage.getItem('stockTicker'), shares, sessionStorage.getItem('currentPrice'));
                 textResponse += 'Sell transaction complete!'
               }
             }

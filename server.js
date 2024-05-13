@@ -303,11 +303,11 @@ function updateUserBalance(db, userId, amount) {
             if (err) reject(err);
             else resolve(result);
         });
-        const accountBalanceUpdate = 'UPDATE stock_user SET account_balance = account_balance + ? WHERE id = ?';
-        db.query(accountBalanceUpdate, [amount, userId], (err, result) => {
-            if (err) reject(err);
-            else resolve(result);
-        });
+        // const accountBalanceUpdate = 'UPDATE stock_user SET account_balance = account_balance + ? WHERE id = ?';
+        // db.query(accountBalanceUpdate, [amount, userId], (err, result) => {
+        //     if (err) reject(err);
+        //     else resolve(result);
+        // });
     });
 }
 
