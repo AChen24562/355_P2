@@ -37,7 +37,19 @@ function getRandomGreeting() {
     return 'Sup! ';
 }
 
-// Add event listener for form submission
+// To open and close the chatbox.
+function toggleChatBox() {
+  textInput.value = '';
+  const chatBox = document.getElementById('chat-area');
+  chatBox.style.display = (chatBox.style.display === 'block') ? 'none' : 'block';
+}
+
+const chatOpenCloseButtons = document.querySelectorAll('.chat-open-close');
+chatOpenCloseButtons.forEach((b) => {
+  b.addEventListener('click', () => toggleChatBox());
+})
+
+// Add event listener for form submission.
 chatForm.addEventListener('submit', async function (event) {
   event.preventDefault(); // Prevent form from submitting traditionally
 
@@ -162,6 +174,8 @@ chatForm.addEventListener('submit', async function (event) {
 
               if (shares < 0) {
                 textResponse += 'Please enter a valid number of shares.';
+              } else if (parseFloat(sessionStorage.getItem('currentPrice')) === 0) {
+                textResponse += 'That stock does not exist.'
               } else if (shares > totalShares) {
                 textResponse += 'You don\'t own that many shares!';
               } else {
@@ -175,10 +189,12 @@ chatForm.addEventListener('submit', async function (event) {
           else {
             let allGood = await getMyStockQuote(stock);
             console.log(allGood)
+            console.log(sessionStorage.getItem('currentPrice'));
+            console.log(sessionStorage.getItem('stockTicker'));
             if (!allGood) {
-              console.log(sessionStorage.getItem('currentPrice'));
-              console.log(sessionStorage.getItem('stockTicker'));
               textResponse += 'Sorry, something went wrong.'
+            } else if (parseFloat(sessionStorage.getItem('currentPrice')) === 0) {
+              textResponse += 'That stock does not exist.'
             } else {
               let purchasePrice = shares * sessionStorage.getItem('currentPrice');
               if (shares < 0) {
@@ -229,18 +245,6 @@ chatForm.addEventListener('submit', async function (event) {
   // After bot response, user can now text again.
   canText = true;
 });
-
-function toggleChatBox() {
-  textInput.innerText = '';
-  const chatBox = document.getElementById('chat-area');
-  chatBox.style.display = (chatBox.style.display === 'block') ? 'none' : 'block';
-}
-
-const chatOpenCloseButtons = document.querySelectorAll('.chat-open-close');
-chatOpenCloseButtons.forEach((b) => {
-  b.addEventListener('click', () => toggleChatBox());
-})
-
 
 // Taken from stockScript.js
 async function getMyStockQuote(symbol) {
