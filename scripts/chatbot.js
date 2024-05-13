@@ -105,6 +105,7 @@ chatForm.addEventListener('submit', async function (event) {
       const stock = extractedEntities['stock:stock'];
       const shares = extractedEntities['wit$number:number'];
       const messageIntent = intents[0].name;
+      const userId = sessionStorage.getItem("userId");
 
       // console.log("Entities...");
       // console.log(action);
@@ -112,25 +113,85 @@ chatForm.addEventListener('submit', async function (event) {
       // console.log(shares);
       console.log("Information...");
       console.log(entities);
-      console.log(traits);
-      console.log(intents);
-      console.log(saidHi);
+      // console.log(traits);
+      // console.log(intents);
+      // console.log(stock);
 
       if (saidHi) {
         textResponse = getRandomGreeting();
       }
 
       if (messageIntent === 'tradeStock') {
+        // Some piece of information was missing.
         if (!action || !stock || !shares) {
           textResponse += 'Sorry - could you rephrase that?';
           if (action) {
             textResponse += '\nI didn\'t quite catch that.';
           }
         } else {
+          // GETTING THE CURRENT BALANCE IN YOUR ACCOUNT
+          let currentBalance = 0;
+
+          await fetch(`/get_user?userId=${encodeURIComponent(userId)}`)
+            .then(response => response.json())
+            .then(data => {
+              if (data) {
+                currentBalance = parseFloat(data[0].available_balance).toFixed(2);
+              } else {
+                console.log('No data received');
+              }
+            })
+            .catch(error => {
+              console.error('Error fetching user data:', error);
+              alert('Error fetching account details');
+            });
+
+          // SELL
           if (action.toLowerCase() === 'sell') {
-            textResponse += 'Sell transaction complete!'
-          } else {
-            textResponse += 'Buy transaction complete ;)';
+            let allGood = await getMyStockQuote(stock);
+            if (!allGood) {
+              textResponse += 'Sorry, something went wrong.'
+            } else {
+              let stock_data =  await getMyUserStocks(userId, sessionStorage.getItem('stockTicker'));
+
+              let totalShares = 0;
+              for (let i = 0; i < stock_data.length; i++) {
+                totalShares += stock_data[i]['quantity'];
+              }
+              console.log(totalShares)
+
+              if (shares < 0) {
+                textResponse += 'Please enter a valid number of shares.';
+              } else if (shares > totalShares) {
+                textResponse += 'You don\'t own that many shares!';
+              } else {
+                sellMyStock(sessionStorage.getItem('stockTicker'), shares, shares * sessionStorage.getItem('currentPrice'));
+                textResponse += 'Sell transaction complete!'
+              }
+            }
+          }
+
+          // BUY
+          else {
+            let allGood = await getMyStockQuote(stock);
+            console.log(allGood)
+            if (!allGood) {
+              console.log(sessionStorage.getItem('currentPrice'));
+              console.log(sessionStorage.getItem('stockTicker'));
+              textResponse += 'Sorry, something went wrong.'
+            } else {
+              let purchasePrice = shares * sessionStorage.getItem('currentPrice');
+              if (shares < 0) {
+                textResponse += 'Please enter a valid number of shares.';
+              } else if (purchasePrice > currentBalance) {
+                console.log(currentBalance)
+                console.log(purchasePrice)
+                textResponse += 'Insufficient funds to purchase this number of shares.';
+              } else {
+                buyNewStock(sessionStorage.getItem('stockTicker'), shares, purchasePrice);
+                textResponse += 'Buy transaction complete!';
+              }
+            }
           }
         }
       } else if (messageIntent === 'info') {
@@ -172,7 +233,6 @@ chatForm.addEventListener('submit', async function (event) {
 function toggleChatBox() {
   textInput.innerText = '';
   const chatBox = document.getElementById('chat-area');
-  console.log(chatBox.style.display);
   chatBox.style.display = (chatBox.style.display === 'block') ? 'none' : 'block';
 }
 
@@ -181,3 +241,107 @@ chatOpenCloseButtons.forEach((b) => {
   b.addEventListener('click', () => toggleChatBox());
 })
 
+
+// Taken from stockScript.js
+async function getMyStockQuote(symbol) {
+  if (symbol) {
+    try {
+      const response = await fetch(`/api/quote?symbol=${encodeURIComponent(symbol)}`);
+      console.log(response);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      // Wait for data to come before continue
+      // DOM needs the new updated price and ticker info after every new search
+      // Issue was here, we weren't waiting for the data to be repopulated
+      // This caused the page to display the same information as the previous page, even though all information
+      // was successfully queried
+      const data = await response.json();
+      sessionStorage.setItem('currentPrice', data.c);
+      sessionStorage.setItem('stockTicker', symbol);
+      return true;
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+  return false;
+}
+function buyNewStock(ticker, shares, purchasePrice){
+  const userId = sessionStorage.getItem("userId");
+  fetch('/buy_stock', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      userId: userId,
+      ticker: ticker,
+      shares: shares,
+      purchasePrice: purchasePrice
+    }),
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.status === 'success') {
+        alert('Purchase successful!');
+        window.location.reload();
+      } else {
+        alert(`Purchase failed: ${data.error}`);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+function sellMyStock(ticker, sharesToSell, currentPrice) {
+  const userId = sessionStorage.getItem("userId");
+  fetch('/sell_stock', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      userId: userId,
+      ticker: ticker,
+      shares_sell: sharesToSell,
+      sellPrice: currentPrice
+    }),
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        alert('Sale successful!');
+        window.location.reload();
+      } else {
+        alert(`Sale failed: ${data.error}`);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Failed to process sale');
+    });
+}
+
+function getMyUserStocks(userId, ticker) {
+  return fetch(`/get_ticker_by_user?userId=${encodeURIComponent(userId)}&ticker=${encodeURIComponent(ticker)}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(stocks => {
+      // console.log('User stocks:', stocks);
+      return stocks;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      return [];
+    });
+}
