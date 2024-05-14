@@ -137,7 +137,9 @@ buyButton.addEventListener('click', () => {
     const purchasePrice = parseFloat(sessionStorage.getItem('estimatedCostBuy'));
     const currentBalance = parseFloat(sessionStorage.getItem('availableBalance'));
 
-    if (shares > 0 && purchasePrice <= currentBalance) {
+    if (shares > 0 && purchasePrice === 0) {
+        alert('Stock does not exist.');
+    } else if (shares > 0 && purchasePrice <= currentBalance) {
         console.log(purchasePrice < currentBalance)
         buyStock(shares, purchasePrice);
     } else {
